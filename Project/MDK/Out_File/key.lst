@@ -1,0 +1,57 @@
+C251 COMPILER V5.60.0,  key                                                                26/03/23  20:32:37  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE key
+OBJECT MODULE PLACED IN .\Out_File\key.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\key.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCD
+                    -IR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;
+                    -..\USER\src) DEBUG PRINT(.\Out_File\key.lst) TABS(2) OBJECT(.\Out_File\key.obj) 
+
+stmt  level    source
+
+    1          #include "key.h"
+    2          
+    3          /**************************************************************************
+    4          函数功能：按键扫描
+    5          输入参数：mode：1 支持连按；0 不支持连按
+    6          *注：优先级 KEY1 > KEY2 > KEY3 > KEY4
+    7          **************************************************************************/
+    8          uint8 Key_Scan(uint8 mode) 
+    9          {
+   10   1          static uint8 key_up = 1;
+   11   1          if(mode)key_up=1;  //支持连按
+   12   1          if(key_up&&(KEY1==0||KEY2==0||KEY3==0||KEY4==0))
+   13   1          {
+   14   2              delay_ms(10);//去抖动
+   15   2              key_up=0;
+   16   2              if(KEY1==0)return 1;
+   17   2              else if(KEY2==0)return 2;
+   18   2              else if(KEY3==0)return 3;
+   19   2              else if(KEY4==0)return 4;
+   20   2          }else if(KEY1==1&&KEY2==1&&KEY3==1&&KEY4==1)key_up=1;
+   21   1          return 0;//无按键按下
+   22   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       125     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =         1     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =         5     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

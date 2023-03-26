@@ -1,0 +1,48 @@
+C251 COMPILER V5.60.0,  timer                                                              26/03/23  21:09:44  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE timer
+OBJECT MODULE PLACED IN .\Out_File\timer.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\timer.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE IN
+                    -CDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\in
+                    -c;..\USER\src) DEBUG PRINT(.\Out_File\timer.lst) TABS(2) OBJECT(.\Out_File\timer.obj) 
+
+stmt  level    source
+
+    1          #include "timer.h"
+    2          
+    3          /**************************************************************************
+    4          函数功能：定时器中断初始化
+    5          输入参数：循环周期，单位：ms
+    6          使用时钟：TIM_4
+    7          注：中断内执行程序在 isr.c 的 TM4_Isr() 中
+    8          **************************************************************************/
+    9          void Timer4_Init(uint16 time_ms)
+   10          {
+   11   1        pit_timer_ms(TIM_4, time_ms);
+   12   1      }
+   13          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =         9     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

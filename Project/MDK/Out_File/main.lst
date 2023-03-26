@@ -1,0 +1,96 @@
+C251 COMPILER V5.60.0,  main                                                               26/03/23  21:28:16  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE main
+OBJECT MODULE PLACED IN .\Out_File\main.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\USER\src\main.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE
+                    - INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER
+                    -\inc;..\USER\src) DEBUG PRINT(.\Out_File\main.lst) TABS(2) OBJECT(.\Out_File\main.obj) 
+
+stmt  level    source
+
+    1          /********************************************************************************************************
+             -*************
+    2           * COPYRIGHT NOTICE
+    3           * Copyright (c) 2020,逐飞科技
+    4           * All rights reserved.
+    5           * 技术讨论QQ群：一群：179029047(已满)  二群：244861897(已满)  三群：824575535
+    6           *
+    7           * 以下所有内容版权均属逐飞科技所有，未经允许不得用于商业用途，
+    8           * 欢迎各位使用并传播本程序，修改内容时必须保留逐飞科技的版权声明。
+    9           *
+   10           * @file          main
+   11           * @company       成都逐飞科技有限公司
+   12           * @author        逐飞科技(QQ790875685)
+   13           * @version       查看doc内version文件 版本说明
+   14           * @Software    MDK FOR C251 V5.60
+   15           * @Target core   STC32G12K128
+   16           * @Taobao      https://seekfree.taobao.com/
+   17           * @date          2020-12-18
+   18           ********************************************************************************************************
+             -************/
+   19          
+   20          #include "headfile.h"
+   21          
+   22          
+   23          
+   24          
+   25          #define BUZZER P50  // 高电平驱动
+   26          #define LED P07     // 高电平驱动
+   27          
+   28          
+   29          
+   30          /*
+   31           * 系统频率，可查看board.h中的 FOSC 宏定义修改。
+   32           * board.h文件中FOSC的值设置为0,则程序自动设置系统频率为33.1776MHZ
+   33           * 在board_init中,已经将P54引脚设置为复位
+   34           * 如果需要使用P54引脚,可以在board.c文件中的board_init()函数中删除SET_P54_RESRT即可
+   35           */
+   36          
+   37          
+   38          void main()
+   39          {
+   40   1        board_init();     // 初始化寄存器,勿删除此句代码。  
+   41   1        // 此处编写用户代码(例如：外设初始化代码等)
+   42   1        PID_struct_init(&pid_left_,POSITION_PID,10000,5000,0,0,0); //pid_left_PID初始化
+   43   1        PID_struct_init(&pid_right_,POSITION_PID,10000,5000,0,0,0); //pid_right_PID初始化
+   44   1        My_Adc_Init(); //adc初始化
+   45   1        Motor_Init(); //电机初始化
+   46   1        Steer_Init(); //舵机初始化
+   47   1        Brushless_Init(); //无刷初始化
+   48   1        OLED_Init();    //OLED初始化
+   49   1        Timer4_Init(10);
+   50   1        
+   51   1          while(1)
+   52   1        {
+   53   2           // 此处编写需要循环执行的代码
+   54   2          
+   55   2        }
+C251 COMPILER V5.60.0,  main                                                               26/03/23  21:28:16  PAGE 2   
+
+   56   1      }
+   57          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       109     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

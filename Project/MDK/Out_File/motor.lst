@@ -1,0 +1,134 @@
+C251 COMPILER V5.60.0,  motor                                                              26/03/23  20:32:37  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE motor
+OBJECT MODULE PLACED IN .\Out_File\motor.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\motor.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE IN
+                    -CDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\in
+                    -c;..\USER\src) DEBUG PRINT(.\Out_File\motor.lst) TABS(2) OBJECT(.\Out_File\motor.obj) 
+
+stmt  level    source
+
+    1          #include "motor.h"
+    2          
+    3          /****编码器读数****/
+    4          int16 pulse_left  = 0; 
+    5          int16 pulse_right = 0;
+    6          
+    7          /**************************************************************************
+    8          函数功能：电机pwm初始化，编码器初始化
+    9          频    率：10KHz
+   10          PWM_DUTY_MAX：50000
+   11          **************************************************************************/
+   12          void Motor_Init(void)
+   13          {
+   14   1        /****左两路PWM****/
+   15   1        pwm_init(PWM_L1, 10000, 0);
+   16   1        pwm_init(PWM_L2, 10000, 0);
+   17   1        /****右两路PWM****/
+   18   1        pwm_init(PWM_R1, 10000, 0);
+   19   1        pwm_init(PWM_R2, 10000, 0);
+   20   1        /****两路编码器****/
+   21   1        ctimer_count_init(CTIM_L);  //左 DIR P35
+   22   1        ctimer_count_init(CTIM_R);  //右 DIR P53
+   23   1      }
+   24          
+   25          /**************************************************************************
+   26          函数功能：控制电机PWM占空比
+   27          输入参数：左PWM占空比，右PWM占空比
+   28          频    率：10KHz
+   29          PWM_DUTY_MAX：50000
+   30          **************************************************************************/
+   31          void Motor_Control(int32 left_duty,int32 right_duty)
+   32          {
+   33   1        /****PWM限幅****/
+   34   1        if(left_duty  >  DUTY_LIMIT)  left_duty  =  DUTY_LIMIT;
+   35   1        if(left_duty  < -DUTY_LIMIT)  left_duty  = -DUTY_LIMIT;
+   36   1        if(right_duty >  DUTY_LIMIT)  right_duty =  DUTY_LIMIT;
+   37   1        if(right_duty < -DUTY_LIMIT)  right_duty = -DUTY_LIMIT;
+   38   1        /****左两路PWM控制****/
+   39   1        if(left_duty >= 0)  
+   40   1        {                     
+   41   2          pwm_duty(PWM_L1,0);
+   42   2          pwm_duty(PWM_L2,left_duty);
+   43   2        }
+   44   1        else
+   45   1        {
+   46   2          pwm_duty(PWM_L1,-left_duty);
+   47   2          pwm_duty(PWM_L2,0);
+   48   2        }
+   49   1        /****右两路PWM控制****/
+   50   1        if(right_duty >= 0)
+   51   1        {
+   52   2          pwm_duty(PWM_R1,0);
+   53   2          pwm_duty(PWM_R2,right_duty);
+   54   2        }
+   55   1        else
+   56   1        {
+   57   2          pwm_duty(PWM_R1,-right_duty);
+C251 COMPILER V5.60.0,  motor                                                              26/03/23  20:32:37  PAGE 2   
+
+   58   2          pwm_duty(PWM_R2,0); 
+   59   2        }
+   60   1      }
+   61          
+   62          /**************************************************************************
+   63          函数功能：关闭电机
+   64          **************************************************************************/
+   65          void Motor_Shut(void)
+   66          {
+   67   1        pwm_duty(PWM_L1,0);
+   68   1        pwm_duty(PWM_L2,0);
+   69   1        pwm_duty(PWM_R1,0);
+   70   1        pwm_duty(PWM_R2,0);
+   71   1      }
+   72          
+   73          /**************************************************************************
+   74          函数功能：读取编码器读数并赋值给变量pulse_left、pulse_right
+   75          **************************************************************************/
+   76          void Encoder_Read(void)
+   77          {
+   78   1        if(DIR_L == 1)  
+   79   1          pulse_left  = ctimer_count_read(CTIM_L);
+   80   1        else
+   81   1          pulse_left  = ctimer_count_read(CTIM_L) * -1;
+   82   1      
+   83   1        if(DIR_R == 1)                                                  //暂时除以二，等编码器换了改
+   84   1          pulse_right = ctimer_count_read(CTIM_R);
+   85   1        else
+   86   1          pulse_right = ctimer_count_read(CTIM_R) * -1;
+   87   1        pulse_left = pulse_left*2;
+   88   1      }
+   89          
+   90          /**************************************************************************
+   91          函数功能：编码器数值清空（不是清空变量）
+   92          **************************************************************************/
+   93          void Encoder_Clear(void)
+   94          {
+   95   1        ctimer_count_clean(CTIM_L);
+   96   1        ctimer_count_clean(CTIM_R);
+   97   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       366     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =         4          4
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        12     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

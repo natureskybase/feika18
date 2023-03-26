@@ -1,0 +1,159 @@
+C251 COMPILER V5.60.0,  control                                                            26/03/23  21:29:05  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE control
+OBJECT MODULE PLACED IN .\Out_File\control.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\control.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE 
+                    -INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\
+                    -inc;..\USER\src) DEBUG PRINT(.\Out_File\control.lst) TABS(2) OBJECT(.\Out_File\control.obj) 
+
+stmt  level    source
+
+    1          #include "control.h"
+    2          #include "math.h"
+    3          #include "pid.h"
+    4          
+    5          
+    6          akeman_t akeman_left ;    //结构体变量，记录脉冲，实际速度，目标速度
+    7          akeman_t akeman_right;
+    8          uint8 pid_flag=0;         //电机闭环开启标志
+    9          float order_angle=0;      //目标角度
+   10          float order_speed=0;      //目标速度
+   11          
+   12          /**************************************************************************
+   13          函数功能：舵机角度和电机速度的协同控制
+   14          输入参数：小车基准速度（单位：mm/s），舵机角度（单位：°）
+   15          **************************************************************************/
+   16          void Akeman_Control(float basic_speed,float target_angle)
+   17          {
+   18   1        float akeman_diff;  //左右轮相对basic_speed的差速
+   19   1        
+   20   1        /****读取编码器数值****/
+   21   1        Encoder_Read();
+   22   1        Encoder_Clear();
+   23   1        
+   24   1        /****计算两电机实际转速****/
+   25   1        //编码器是1024线，4倍频，齿数为30
+   26   1        //车轮直径56mm，与编码器对应齿数为68
+   27   1        akeman_left.current_speed  = pulse_left *0.20603922;
+   28   1        akeman_right.current_speed = pulse_right*0.20603922;
+   29   1        
+   30   1        /****计算两电机目标转速****/
+   31   1        akeman_diff = basic_speed*(14.2*tan(target_angle*3.14/180.0))/20.0; //相对差速
+   32   1        akeman_left.target_speed  = basic_speed - akeman_diff;
+   33   1        akeman_right.target_speed = basic_speed + akeman_diff;
+   34   1        
+   35   1        /****PID开启时控制电机和舵机****/
+   36   1        if(pid_flag)
+   37   1        {
+   38   2          /****电机闭环****/
+   39   2          Motor_PID_Control(akeman_left.current_speed ,akeman_left.target_speed ,akeman_right.current_speed ,akem
+             -an_right.target_speed);
+   40   2        
+   41   2          /****舵机转角****/
+   42   2          Steer_Spin(target_angle);
+   43   2        }
+   44   1      }
+   45          
+   46          /**************************************************************************
+   47          函数功能：电机PID闭环控制
+   48          输入参数：左右轮的实际与目标转速
+   49          **************************************************************************/
+   50          void Motor_PID_Control(float current_l,float target_l,float current_r,float target_r)
+   51          {
+   52   1        static float pwm_l=0;
+   53   1        static float pwm_r=0; 
+   54   1        
+   55   1      //  static float pwm_l=0,error_l=0,last_error_l=0,prev_error_l=0;
+   56   1      //  static float pwm_r=0,error_r=0,last_error_r=0,prev_error_r=0;
+C251 COMPILER V5.60.0,  control                                                            26/03/23  21:29:05  PAGE 2   
+
+   57   1      //  float kp_l=akeman_left.kp ,ki_l=akeman_left.ki ,kd_l=akeman_left.kd ;
+   58   1      //  float kp_r=akeman_right.kp,ki_r=akeman_right.ki,kd_r=akeman_right.kd;
+   59   1      //  
+   60   1      //  /****计算本次偏差****/
+   61   1      //  error_l = target_l - current_l;
+   62   1      //  error_r = target_r - current_r;
+   63   1      //  
+   64   1      //  /****若实际速度为0，则不加积分项****/
+   65   1      //  if(current_l==0) ki_l=0;
+   66   1      //  if(current_r==0) ki_r=0;
+   67   1      //  
+   68   1      //  /****增量式PID控制器****/
+   69   1      //  pwm_l += (int32)(kp_l*(error_l-last_error_l) + ki_l*error_l + kd_l*(error_l-2*last_error_l+prev_error_
+             -l))*100;
+   70   1      //  pwm_r += (int32)(kp_r*(error_r-last_error_r) + ki_r*error_r + kd_r*(error_r-2*last_error_r+prev_error_
+             -r))*100;
+   71   1      //  
+   72   1      //  /****限幅****/
+   73   1      //  if(pwm_l >  PWM_DUTY_MAX) pwm_l =  PWM_DUTY_MAX;
+   74   1      //  if(pwm_l < -PWM_DUTY_MAX) pwm_l = -PWM_DUTY_MAX;
+   75   1      //  if(pwm_r >  PWM_DUTY_MAX) pwm_r =  PWM_DUTY_MAX;
+   76   1      //  if(pwm_r < -PWM_DUTY_MAX) pwm_r = -PWM_DUTY_MAX;
+   77   1      //  
+   78   1      //  /****保存前两次偏差****/
+   79   1      //  prev_error_l = last_error_l;
+   80   1      //  prev_error_r = last_error_r;
+   81   1      //  last_error_l = error_l;
+   82   1      //  last_error_r = error_r;
+   83   1      
+   84   1        pwm_l=pid_calc(&pid_left_,current_l,target_l);
+   85   1        pwm_r=pid_calc(&pid_right_,current_r,target_r); 
+   86   1        Motor_Control((int32)pwm_l,(int32)pwm_r);
+   87   1      }
+   88          
+   89          /**************************************************************************
+   90          函数功能：根据adc读值修正角度
+   91          输入参数：PD控制参数
+   92          **************************************************************************/
+   93          float Correct_Angle(float kp,float kd)
+   94          {
+   95   1        float adc_err,target_angle;
+   96   1        static float adc_err_last = 0;
+   97   1        adc_err = (adc1-adc4)/(float)(adc1+adc4);
+   98   1        target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
+   99   1        adc_err_last = adc_err;
+  100   1        return target_angle;
+  101   1      }
+  102          
+  103          /**************************************************************************
+  104          函数功能：开启电机闭环
+  105          **************************************************************************/
+  106          void PID_on(void)
+  107          {
+  108   1        pid_flag = 1;
+  109   1      }
+  110          
+  111          /**************************************************************************
+  112          函数功能：关闭电机闭环
+  113          **************************************************************************/
+  114          void PID_off(void)
+  115          {
+  116   1        pid_flag = 0;
+  117   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+C251 COMPILER V5.60.0,  control                                                            26/03/23  21:29:05  PAGE 3   
+
+  code size            =       317     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =        61         12
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        45     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

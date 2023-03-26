@@ -1,0 +1,121 @@
+C251 COMPILER V5.60.0,  brushless                                                          26/03/23  20:46:30  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE brushless
+OBJECT MODULE PLACED IN .\Out_File\brushless.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\brushless.c XSMALL INTR2 WARNINGLEVEL(3) BROWS
+                    -E INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USE
+                    -R\inc;..\USER\src) DEBUG PRINT(.\Out_File\brushless.lst) TABS(2) OBJECT(.\Out_File\brushless.obj) 
+
+stmt  level    source
+
+    1          #include "brushless.h"
+    2          
+    3          
+    4          
+    5          
+    6          
+    7          
+    8          
+    9          // ÎÞË¢µç»ú³õÊ¼»¯  ÐÅºÅµÄ¸ßµçÆ½Ê±¼ä·¶Î§ÊÇ1-2ms£¬1msÊ±µç»ú²»×ª£¬2msÊ±µç»úÂú×ª¡£Í¨¹ýµ÷½Ú¸ßµçÆ½µÄÊ±¼äÀ´¸Ä±äÎ
+             -ÞË¢µç»úµÄ×ªËÙ¡£
+   10          // ¼ÆËãÎÞË¢µçµ÷×ªËÙ   £¨1ms - 2ms£©/20ms * 10000£¨10000ÊÇPWMµÄÂúÕ¼¿Õ±ÈÊ±ºòµÄÖµ£©
+   11          // ÎÞË¢µçµ÷×ªËÙ 0%   Îª 500
+   12          // ÎÞË¢µçµ÷×ªËÙ 100% Îª 1000
+   13          void Brushless_Init(void)
+   14          {
+   15   1        // pwm³õÊ¼»¯ÆµÂÊÎª50hz ÎÞË¢ÉèÖÃ0%Õ¼¿Õ±È
+   16   1        pwm_init(BRUSHLESS_L, 50, 500); //ÎÞË¢ÉèÖÃ0%Õ¼¿Õ±È          
+   17   1        pwm_init(BRUSHLESS_R, 50, 500); //ÎÞË¢ÉèÖÃ0%Õ¼¿Õ±È                    
+   18   1      
+   19   1      }
+   20          //Êä³öPWMÇý¶¯ÎÞË¢
+   21          //valueÖµÎª×ªËÙ°Ù·Ö±È£º0~100
+   22          void Set_Brushless_Output(uint16 value)
+   23          {
+   24   1        if(value<=100)
+   25   1        {
+   26   2          pwm_duty(BRUSHLESS_L, (value*5+500)); // ÎÞË¢µçµ÷×ªËÙ value% 
+   27   2          pwm_duty(BRUSHLESS_R, (value*5+500)); // ÎÞË¢µçµ÷×ªËÙ value%      
+   28   2        }else //value ÊäÈë´íÎó
+   29   1        {
+   30   2          pwm_duty(BRUSHLESS_L, (0*5+500));  // ÎÞË¢µçµ÷×ªËÙ 0% 
+   31   2          pwm_duty(BRUSHLESS_R, (0*5+500));  // ÎÞË¢µçµ÷×ªËÙ 0%       
+   32   2        }
+   33   1        
+   34   1      }
+   35          
+   36          
+   37          
+   38          
+   39          
+   40          
+   41          
+   42          
+   43          
+   44          
+   45          
+   46          
+   47          
+   48          
+   49          
+   50          
+   51          
+   52          
+   53          
+   54          
+   55          
+   56          
+C251 COMPILER V5.60.0,  brushless                                                          26/03/23  20:46:30  PAGE 2   
+
+   57          
+   58          
+   59          
+   60          
+   61          
+   62          
+   63          
+   64          
+   65          
+   66          
+   67          
+   68          
+   69          
+   70          
+   71          
+   72          
+   73          
+   74          
+   75          
+   76          
+   77          
+   78          
+   79          
+   80          
+   81          
+   82          
+   83          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       104     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

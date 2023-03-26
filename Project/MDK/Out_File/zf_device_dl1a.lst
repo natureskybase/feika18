@@ -1,0 +1,126 @@
+C251 COMPILER V5.60.0,  zf_device_dl1a                                                     18/03/23  21:20:46  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_device_dl1a
+OBJECT MODULE PLACED IN .\Out_File\zf_device_dl1a.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\zf_device_dl1a.c XSMALL INTR2 WARNINGLEVEL(3) 
+                    -BROWSE INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;.
+                    -.\USER\inc;..\USER\src) DEBUG PRINT(.\Out_File\zf_device_dl1a.lst) TABS(2) OBJECT(.\Out_File\zf_device_dl1a.obj) 
+
+stmt  level    source
+
+    1          /********************************************************************************************************
+             -*************
+    2          * CH32V307VCT6 Opensourec Library 即（CH32V307VCT6 开源库）是一个基于官方 SDK 接口的第�
+             -�方开源库
+    3          * Copyright (c) 2022 SEEKFREE 逐飞科技
+    4          *
+    5          * 本文件是CH32V307VCT6 开源库的一部分
+    6          *
+    7          * CH32V307VCT6 开源库 是免费软件
+    8          * 您可以根据自由软件基金会发布的 GPL（GNU General Public License，即 GNU通用公共许
+             -可证）的条款
+    9          * 即 GPL 的第3版（即 GPL3.0）或（您选择的）任何后来的版本，重新发布和/或修�
+             -�它
+   10          *
+   11          * 本开源库的发布是希望它能发挥作用，但并未对其作任何的保证
+   12          * 甚至没有隐含的适销性或适合特定用途的保证
+   13          * 更多细节请参见 GPL
+   14          *
+   15          * 您应该在收到本开源库的同时收到一份 GPL 的副本
+   16          * 如果没有，请参阅<https://www.gnu.org/licenses/>
+   17          *
+   18          * 额外注明：
+   19          * 本开源库使用 GPL3.0 开源许可证协议 以上许可申明为译文版本
+   20          * 许可申明英文版在 libraries/doc 文件夹下的 GPL3_permission_statement.txt 文件中
+   21          * 许可证副本在 libraries 文件夹下 即该文件夹下的 LICENSE 文件
+   22          * 欢迎各位使用并传播本程序 但修改内容时必须保留逐飞科技的版权声明（即本
+             -声明）
+   23          *
+   24          * 文件名称          zf_device_dl1a
+   25          * 公司名称          成都逐飞科技有限公司
+   26          * 版本信息          查看 libraries/doc 文件夹内 version 文件 版本说明
+   27          * 开发环境          MounRiver Studio V1.8.1
+   28          * 适用平台          CH32V307VCT6
+   29          * 店铺链接          https://seekfree.taobao.com/
+   30          *
+   31          * 修改记录
+   32          * 日期                                      作者                             备注
+   33          * 2023-03-18        大W            first version
+   34          *********************************************************************************************************
+             -***********/
+   35          /********************************************************************************************************
+             -*************
+   36          * 接线定义：
+   37          *                   ------------------------------------
+   38          *                   模块管脚            单片机管脚
+   39          *                   SCL                 查看 zf_device_dl1a.h 中 DL1A_SCL_PIN  宏定义
+   40          *                   SDA                 查看 zf_device_dl1a.h 中 DL1A_SDA_PIN  宏定义
+   41          *                   XS                  查看 zf_device_dl1a.h 中 DL1A_XS_PIN  宏定义
+   42          *                   VCC                 5V 电源
+   43          *                   GND                 电源地
+   44          *                   ------------------------------------
+   45          *********************************************************************************************************
+             -***********/
+   46          
+   47          #include "zf_common_debug.h"
+*** ERROR C318 IN LINE 47 OF ..\CODE\zf_device_dl1a.c: can't open file 'zf_common_debug.h'
+   48          #include "zf_driver_delay.h"
+C251 COMPILER V5.60.0,  zf_device_dl1a                                                     18/03/23  21:20:46  PAGE 2   
+
+*** ERROR C318 IN LINE 48 OF ..\CODE\zf_device_dl1a.c: can't open file 'zf_driver_delay.h'
+   49          #include "zf_driver_soft_iic.h"
+*** ERROR C318 IN LINE 49 OF ..\CODE\zf_device_dl1a.c: can't open file 'zf_driver_soft_iic.h'
+   50          #include "zf_device_dl1a.h"
+*** ERROR C318 IN LINE 51 OF ..\CODE\zf_device_dl1a.h: can't open file 'zf_common_typedef.h'
+*** ERROR C25 IN LINE 176 OF ..\CODE\zf_device_dl1a.h: syntax error near 'uint8'
+*** WARNING C34 IN LINE 176 OF ..\CODE\zf_device_dl1a.h: 'tcc': missing declaration specifiers
+*** ERROR C42 IN LINE 176 OF ..\CODE\zf_device_dl1a.h: 'tcc': not in formal parameter list
+*** WARNING C34 IN LINE 177 OF ..\CODE\zf_device_dl1a.h: 'uint8': missing declaration specifiers
+*** ERROR C42 IN LINE 177 OF ..\CODE\zf_device_dl1a.h: 'uint8': not in formal parameter list
+*** ERROR C25 IN LINE 177 OF ..\CODE\zf_device_dl1a.h: syntax error near 'msrc'
+*** WARNING C34 IN LINE 177 OF ..\CODE\zf_device_dl1a.h: 'msrc': missing declaration specifiers
+*** ERROR C42 IN LINE 177 OF ..\CODE\zf_device_dl1a.h: 'msrc': not in formal parameter list
+*** WARNING C34 IN LINE 178 OF ..\CODE\zf_device_dl1a.h: 'uint8': missing declaration specifiers
+*** ERROR C42 IN LINE 178 OF ..\CODE\zf_device_dl1a.h: 'uint8': not in formal parameter list
+*** ERROR C25 IN LINE 178 OF ..\CODE\zf_device_dl1a.h: syntax error near 'dss'
+*** WARNING C34 IN LINE 178 OF ..\CODE\zf_device_dl1a.h: 'dss': missing declaration specifiers
+*** ERROR C42 IN LINE 178 OF ..\CODE\zf_device_dl1a.h: 'dss': not in formal parameter list
+*** WARNING C34 IN LINE 179 OF ..\CODE\zf_device_dl1a.h: 'uint8': missing declaration specifiers
+*** ERROR C42 IN LINE 179 OF ..\CODE\zf_device_dl1a.h: 'uint8': not in formal parameter list
+*** ERROR C25 IN LINE 179 OF ..\CODE\zf_device_dl1a.h: syntax error near 'pre_range'
+*** WARNING C34 IN LINE 179 OF ..\CODE\zf_device_dl1a.h: 'pre_range': missing declaration specifiers
+*** ERROR C42 IN LINE 179 OF ..\CODE\zf_device_dl1a.h: 'pre_range': not in formal parameter list
+*** WARNING C34 IN LINE 180 OF ..\CODE\zf_device_dl1a.h: 'uint8': missing declaration specifiers
+*** ERROR C42 IN LINE 180 OF ..\CODE\zf_device_dl1a.h: 'uint8': not in formal parameter list
+*** ERROR C25 IN LINE 180 OF ..\CODE\zf_device_dl1a.h: syntax error near 'final_range'
+*** WARNING C34 IN LINE 180 OF ..\CODE\zf_device_dl1a.h: 'final_range': missing declaration specifiers
+*** ERROR C42 IN LINE 180 OF ..\CODE\zf_device_dl1a.h: 'final_range': not in formal parameter list
+*** ERROR C25 IN LINE 181 OF ..\CODE\zf_device_dl1a.h: syntax error near '}'
+*** WARNING C34 IN LINE 181 OF ..\CODE\zf_device_dl1a.h: 'dl1a_sequence_enables_step_struct': missing declaration specif
+             -iers
+*** ERROR C25 IN LINE 185 OF ..\CODE\zf_device_dl1a.h: syntax error near 'uint16'
+*** WARNING C34 IN LINE 185 OF ..\CODE\zf_device_dl1a.h: 'pre_range_vcsel_period_pclks': missing declaration specifiers
+*** ERROR C42 IN LINE 185 OF ..\CODE\zf_device_dl1a.h: 'pre_range_vcsel_period_pclks': not in formal parameter list
+*** WARNING C34 IN LINE 186 OF ..\CODE\zf_device_dl1a.h: 'uint16': missing declaration specifiers
+*** ERROR C42 IN LINE 186 OF ..\CODE\zf_device_dl1a.h: 'uint16': not in formal parameter list
+*** ERROR C25 IN LINE 186 OF ..\CODE\zf_device_dl1a.h: syntax error near 'final_range_vcsel_period_pclks'
+*** WARNING C34 IN LINE 186 OF ..\CODE\zf_device_dl1a.h: 'final_range_vcsel_period_pclks': missing declaration specifier
+             -s
+*** ERROR C42 IN LINE 186 OF ..\CODE\zf_device_dl1a.h: 'final_range_vcsel_period_pclks': not in formal parameter list
+*** WARNING C34 IN LINE 188 OF ..\CODE\zf_device_dl1a.h: 'uint16': missing declaration specifiers
+*** ERROR C42 IN LINE 188 OF ..\CODE\zf_device_dl1a.h: 'uint16': not in formal parameter list
+*** ERROR C25 IN LINE 188 OF ..\CODE\zf_device_dl1a.h: syntax error near 'msrc_dss_tcc_mclks'
+*** WARNING C34 IN LINE 188 OF ..\CODE\zf_device_dl1a.h: 'msrc_dss_tcc_mclks': missing declaration specifiers
+*** ERROR C42 IN LINE 188 OF ..\CODE\zf_device_dl1a.h: 'msrc_dss_tcc_mclks': not in formal parameter list
+*** WARNING C34 IN LINE 189 OF ..\CODE\zf_device_dl1a.h: 'uint16': missing declaration specifiers
+*** ERROR C42 IN LINE 189 OF ..\CODE\zf_device_dl1a.h: 'uint16': not in formal parameter list
+*** ERROR C25 IN LINE 189 OF ..\CODE\zf_device_dl1a.h: syntax error near 'pre_range_mclks'
+*** WARNING C34 IN LINE 189 OF ..\CODE\zf_device_dl1a.h: 'pre_range_mclks': missing declaration specifiers
+*** ERROR C42 IN LINE 189 OF ..\CODE\zf_device_dl1a.h: 'pre_range_mclks': not in formal parameter list
+*** WARNING C34 IN LINE 190 OF ..\CODE\zf_device_dl1a.h: 'uint16': missing declaration specifiers
+*** ERROR C42 IN LINE 190 OF ..\CODE\zf_device_dl1a.h: 'uint16': not in formal parameter list
+*** ERROR C25 IN LINE 190 OF ..\CODE\zf_device_dl1a.h: syntax error near 'final_range_mclks'
+*** ERROR C7 IN LINE 190 OF ..\CODE\zf_device_dl1a.h: compilation aborted
+
+C251 COMPILATION COMPLETE.  18 WARNING(S),  33 ERROR(S)

@@ -1,0 +1,63 @@
+C251 COMPILER V5.60.0,  steer                                                              26/03/23  20:32:37  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE steer
+OBJECT MODULE PLACED IN .\Out_File\steer.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\steer.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE IN
+                    -CDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\in
+                    -c;..\USER\src) DEBUG PRINT(.\Out_File\steer.lst) TABS(2) OBJECT(.\Out_File\steer.obj) 
+
+stmt  level    source
+
+    1          #include "steer.h"
+    2          
+    3          /**************************************************************************
+    4          函数功能：舵机pwm初始化
+    5          频    率：50Hz
+    6          初始中值：MIDDLE_ANGLE
+    7          **************************************************************************/
+    8          void Steer_Init(void)
+    9          {
+   10   1        pwm_init(STEER_PIN, 50, MIDDLE_ANGLE);
+   11   1      }
+   12          
+   13          /**************************************************************************
+   14          函数功能：舵机旋转
+   15          输入参数：舵机相对中值旋转的角度（顺时针为正）
+   16          单    位：°
+   17          **************************************************************************/
+   18          void Steer_Spin(float target_angle)
+   19          {
+   20   1        uint32 duty;
+   21   1        
+   22   1        /****限幅****/
+   23   1        if(target_angle > 28) target_angle =  28.0;
+   24   1        if(target_angle <-28) target_angle = -28.0;
+   25   1        
+   26   1        duty = MIDDLE_ANGLE + target_angle*13.888;
+   27   1        pwm_duty(STEER_PIN,duty);
+   28   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        87     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

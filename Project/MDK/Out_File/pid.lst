@@ -1,0 +1,201 @@
+C251 COMPILER V5.60.0,  pid                                                                26/03/23  21:22:08  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE pid
+OBJECT MODULE PLACED IN .\Out_File\pid.obj
+COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\pid.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCD
+                    -IR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;
+                    -..\USER\src) DEBUG PRINT(.\Out_File\pid.lst) TABS(2) OBJECT(.\Out_File\pid.obj) 
+
+stmt  level    source
+
+    1          /*
+    2           * @Author: Ptisak
+    3           * @Date: 2022-04-07 14:03:50
+    4           * @LastEditors: Please set LastEditors
+    5           * @LastEditTime: 2023-03-19 23:44:15
+    6           */
+    7          #include "pid.h"
+    8          #include "math.h"
+    9          
+   10          /* 定义PID具体对象 */
+   11          pid_t_ pid_left_;
+   12          pid_t_ pid_right_;
+   13          
+   14          
+   15          
+   16          
+   17          void abs_limit(float *a, float ABS_MAX)
+   18          {
+   19   1        if (*a > ABS_MAX)
+   20   1          *a = ABS_MAX;
+   21   1        if (*a < -ABS_MAX)
+   22   1          *a = -ABS_MAX;
+   23   1      }
+   24          
+   25          static void pid_param_init(
+   26              pid_t_ *pid,
+   27              uint32 mode,
+   28              uint32 maxout,
+   29              uint32 intergral_limit,
+   30              float kp,
+   31              float ki,
+   32              float kd)
+   33          {
+   34   1      
+   35   1        pid->integral_limit = intergral_limit;
+   36   1        pid->max_out = maxout;
+   37   1        pid->pid_mode = mode;
+   38   1      
+   39   1        pid->p = kp;
+   40   1        pid->i = ki;
+   41   1        pid->d = kd;
+   42   1      }
+   43          /**
+   44           * @brief     modify pid parameter when code running
+   45           * @param[in] pid: control pid struct
+   46           * @param[in] p/i/d: pid parameter
+   47           * @retval    none
+   48           */
+   49          static void pid_reset(pid_t_ *pid, float kp, float ki, float kd)
+   50          {
+   51   1        pid->p = kp;
+   52   1        pid->i = ki;
+   53   1        pid->d = kd;
+   54   1      
+   55   1        pid->pout = 0;
+   56   1        pid->iout = 0;
+   57   1        pid->dout = 0;
+C251 COMPILER V5.60.0,  pid                                                                26/03/23  21:22:08  PAGE 2   
+
+   58   1        pid->out = 0;
+   59   1      }
+   60          
+   61          /**
+   62           * @brief     calculate delta PID and position PID
+   63           * @param[in] pid: control pid struct
+   64           * @param[in] get: measure feedback value
+   65           * @param[in] set: target value
+   66           * @retval    pid calculate output
+   67           */
+   68          float pid_calc(pid_t_ *pid, float get, float set)
+   69          {
+   70   1        pid->get = get;
+   71   1        pid->set = set;
+   72   1        pid->err[NOW] = set - get;
+   73   1      
+   74   1        if ((pid->input_max_err != 0) && (fabs(pid->err[NOW]) > pid->input_max_err))
+   75   1          return 0;
+   76   1      
+   77   1        if (pid->pid_mode == POSITION_PID) // position PID
+   78   1        {
+   79   2          pid->pout = pid->p * pid->err[NOW];
+   80   2          pid->iout += pid->i * pid->err[NOW];
+   81   2          pid->dout = pid->d * (pid->err[NOW] - pid->err[LAST]);
+   82   2      
+   83   2          abs_limit(&(pid->iout), pid->integral_limit);
+   84   2          pid->out = pid->pout + pid->iout + pid->dout;
+   85   2          abs_limit(&(pid->out), pid->max_out);
+   86   2        }
+   87   1        else if (pid->pid_mode == DELTA_PID) // delta PID
+   88   1        {
+   89   2          pid->pout = pid->p * (pid->err[NOW] - pid->err[LAST]);
+   90   2          pid->iout = pid->i * pid->err[NOW];
+   91   2          pid->dout = pid->d * (pid->err[NOW] - 2 * pid->err[LAST] + pid->err[LLAST]);
+   92   2      
+   93   2          pid->out += pid->pout + pid->iout + pid->dout;
+   94   2          abs_limit(&(pid->out), pid->max_out);
+   95   2        }
+   96   1      
+   97   1        pid->err[LLAST] = pid->err[LAST];
+   98   1        pid->err[LAST] = pid->err[NOW];
+   99   1      
+  100   1        if ((pid->output_deadband != 0) && (fabs(pid->out) < pid->output_deadband))
+  101   1          return 0;
+  102   1        else
+  103   1          return pid->out;
+  104   1      }
+  105          /**
+  106           * @brief     initialize pid parameter
+  107           * @retval    none
+  108           */
+  109          void PID_struct_init(
+  110              pid_t_ *pid,
+  111              uint32 mode,
+  112              uint32 maxout,
+  113              uint32 intergral_limit,
+  114          
+  115              float kp,
+  116              float ki,
+  117              float kd)
+  118          {
+  119   1        pid->f_param_init = pid_param_init;
+  120   1        pid->f_pid_reset = pid_reset;
+  121   1      
+  122   1        pid->f_param_init(pid, mode, maxout, intergral_limit, kp, ki, kd);
+*** WARNING C52 IN LINE 122 OF ..\CODE\pid.c: use of undefined type 'pid_t_'
+C251 COMPILER V5.60.0,  pid                                                                26/03/23  21:22:08  PAGE 3   
+
+*** WARNING C98 IN LINE 122 OF ..\CODE\pid.c: parameter 1: pointer to different objects
+  123   1        pid->f_pid_reset(pid, kp, ki, kd);
+*** WARNING C52 IN LINE 123 OF ..\CODE\pid.c: use of undefined type 'pid_t_'
+*** WARNING C98 IN LINE 123 OF ..\CODE\pid.c: parameter 1: pointer to different objects
+  124   1      }
+  125          
+  126          /**
+  127           * @brief     calculate position PID
+  128           * @param[in] pid: control pid struct
+  129           * @param[in] get: measure feedback value
+  130           * @param[in] set: target value
+  131           * @retval    pid calculate output
+  132           */
+  133          float position_pid_calc(pid_t_ *pid, float get, float set)
+  134          {
+  135   1        pid->get = get;
+  136   1        pid->set = set;
+  137   1        pid->err[NOW] = set - get;
+  138   1        pid->pout = pid->p * pid->err[NOW];
+  139   1        pid->iout += pid->i * pid->err[NOW];
+  140   1        pid->dout = pid->d * (pid->err[NOW] - pid->err[LAST]);
+  141   1        abs_limit(&(pid->iout), pid->integral_limit);
+  142   1        pid->out = pid->pout + pid->iout + pid->dout;
+  143   1        abs_limit(&(pid->out), pid->max_out);
+  144   1      
+  145   1        pid->err[LLAST] = pid->err[LAST];
+  146   1        pid->err[LAST] = pid->err[NOW];
+  147   1        return pid->out;
+  148   1      }
+  149          
+  150          
+  151          /* clear integral */
+  152          void pid_clear_integral(pid_t_ *pid)
+  153          {
+  154   1        pid->iout=0;
+  155   1      }
+  156          
+  157          
+  158          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =      1139     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       144         56
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  4 WARNING(S),  0 ERROR(S)
