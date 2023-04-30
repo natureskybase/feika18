@@ -20,9 +20,24 @@ void Steer_Spin(float target_angle)
 	uint32 duty;
 	
 	/****оч╥Ы****/
-	if(target_angle > 28) target_angle =  28.0;
-	if(target_angle <-28) target_angle = -28.0;
+	if(target_angle > 100) target_angle =  100;
+	if(target_angle <-100) target_angle = -100;
+	if(target_angle>=-100&&target_angle<=100)
+	{
+	if(target_angle>=0)
+	{
+		duty = MIDDLE_ANGLE +0.006*target_angle*target_angle;
+//	duty = MIDDLE_ANGLE + target_angle*0.4;
+	}
 	
-	duty = MIDDLE_ANGLE + target_angle*13.888;
+	if(target_angle<0)
+	{
+		duty = MIDDLE_ANGLE +(-0.007)*target_angle*target_angle;
+//	duty = MIDDLE_ANGLE + target_angle*0.3;
+	}
+	}
 	pwm_duty(STEER_PIN,duty);
 }
+
+
+

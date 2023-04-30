@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  zf_exti                                                            26/03/23  20:32:34  PAGE 1   
+C251 COMPILER V5.60.0,  zf_exti                                                            24/04/23  21:34:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE zf_exti
 OBJECT MODULE PLACED IN .\Out_File\zf_exti.obj
-COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\..\Libraries\seekfree_libraries\zf_exti.c XSMALL IN
-                    -TR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_
-                    -peripheral;..\CODE;..\USER\inc;..\USER\src) DEBUG PRINT(.\Out_File\zf_exti.lst) TABS(2) OBJECT(.\Out_File\zf_exti.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\..\Libraries\seekfree_libraries\zf_exti.c XSMALL INTR2 WARNINGLEVEL
+                    -(3) BROWSE INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CO
+                    -DE;..\USER\inc;..\USER\src) DEBUG PRINT(.\Out_File\zf_exti.lst) TABS(2) OBJECT(.\Out_File\zf_exti.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    51   2          INTCLKO |= 1<<5;  //Ê¹ÄÜINT3ÖÐ¶Ï
    52   2        }
    53   1        
-C251 COMPILER V5.60.0,  zf_exti                                                            26/03/23  20:32:34  PAGE 2   
+C251 COMPILER V5.60.0,  zf_exti                                                            24/04/23  21:34:02  PAGE 2   
 
    54   1        if(INT4_P30 == int_n)
    55   1        {

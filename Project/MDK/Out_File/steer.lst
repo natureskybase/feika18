@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  steer                                                              26/03/23  20:32:37  PAGE 1   
+C251 COMPILER V5.60.0,  steer                                                              24/04/23  21:34:10  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE steer
 OBJECT MODULE PLACED IN .\Out_File\steer.obj
-COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\steer.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE IN
-                    -CDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\in
-                    -c;..\USER\src) DEBUG PRINT(.\Out_File\steer.lst) TABS(2) OBJECT(.\Out_File\steer.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\CODE\steer.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Libra
+                    -ries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src) D
+                    -EBUG PRINT(.\Out_File\steer.lst) TABS(2) OBJECT(.\Out_File\steer.obj) 
 
 stmt  level    source
 
@@ -31,17 +31,33 @@ stmt  level    source
    20   1        uint32 duty;
    21   1        
    22   1        /****оч╥Ы****/
-   23   1        if(target_angle > 28) target_angle =  28.0;
-   24   1        if(target_angle <-28) target_angle = -28.0;
-   25   1        
-   26   1        duty = MIDDLE_ANGLE + target_angle*13.888;
-   27   1        pwm_duty(STEER_PIN,duty);
-   28   1      }
+   23   1        if(target_angle > 100) target_angle =  100;
+   24   1        if(target_angle <-100) target_angle = -100;
+   25   1        if(target_angle>=-100&&target_angle<=100)
+   26   1        {
+   27   2        if(target_angle>=0)
+   28   2        {
+   29   3          duty = MIDDLE_ANGLE +0.006*target_angle*target_angle;
+   30   3      //  duty = MIDDLE_ANGLE + target_angle*0.4;
+   31   3        }
+   32   2        
+   33   2        if(target_angle<0)
+   34   2        {
+   35   3          duty = MIDDLE_ANGLE +(-0.007)*target_angle*target_angle;
+   36   3      //  duty = MIDDLE_ANGLE + target_angle*0.3;
+   37   3        }
+   38   2        }
+   39   1        pwm_duty(STEER_PIN,duty);
+   40   1      }
+   41          
+   42          
+   43          
+*** WARNING C184 IN LINE 39 OF ..\CODE\steer.c: value of 'duty' possibly undefined
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =        87     ------
+  code size            =       173     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -51,6 +67,8 @@ Module Information          Static   Overlayable
   edata size           =    ------     ------
   bit size             =    ------     ------
   ebit size            =    ------     ------
+C251 COMPILER V5.60.0,  steer                                                              24/04/23  21:34:10  PAGE 2   
+
   bitaddressable size  =    ------     ------
   ebitaddressable size =    ------     ------
   far data size        =    ------     ------
@@ -60,4 +78,4 @@ Module Information          Static   Overlayable
 End of Module Information.
 
 
-C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

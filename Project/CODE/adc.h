@@ -16,18 +16,20 @@
 #define S_ADC11 ADC_P03
 
 /****扩展变量****/
-extern uint16 adc1; 
-extern uint16 adc2;
-extern uint16 adc3; 
-extern uint16 adc4;
-extern uint16 adc5; 
-extern uint16 adc6;
-extern uint16 adc7; 
-extern uint16 adc8;
+extern int16 adc1; 
+extern int16 adc2;
+extern int16 adc3; 
+extern int16 adc4;
+extern int16 adc5; 
+extern int16 adc6;
+extern int16 adc7; 
+extern int16 adc8;
+
 
 /****函数声明****/
 void My_Adc_Init(void);
 void Read_Adc_Value(void);
 uint16 adc_mean_filter(ADCN_enum adcn,ADC_SPEED_enum speed, uint8 count);
+
 
 #endif

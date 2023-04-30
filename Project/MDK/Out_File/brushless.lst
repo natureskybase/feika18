@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  brushless                                                          26/03/23  20:46:30  PAGE 1   
+C251 COMPILER V5.60.0,  brushless                                                          24/04/23  21:34:11  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE brushless
 OBJECT MODULE PLACED IN .\Out_File\brushless.obj
-COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\brushless.c XSMALL INTR2 WARNINGLEVEL(3) BROWS
-                    -E INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USE
-                    -R\inc;..\USER\src) DEBUG PRINT(.\Out_File\brushless.lst) TABS(2) OBJECT(.\Out_File\brushless.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\CODE\brushless.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\L
+                    -ibraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\sr
+                    -c) DEBUG PRINT(.\Out_File\brushless.lst) TABS(2) OBJECT(.\Out_File\brushless.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    54          
    55          
    56          
-C251 COMPILER V5.60.0,  brushless                                                          26/03/23  20:46:30  PAGE 2   
+C251 COMPILER V5.60.0,  brushless                                                          24/04/23  21:34:11  PAGE 2   
 
    57          
    58          

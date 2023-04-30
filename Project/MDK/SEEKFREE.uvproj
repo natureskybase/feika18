@@ -824,6 +824,11 @@
               <FileType>1</FileType>
               <FilePath>..\CODE\pid.c</FilePath>
             </File>
+            <File>
+              <FileName>host.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\CODE\host.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

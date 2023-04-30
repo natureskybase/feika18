@@ -5,7 +5,7 @@
 
 /****宏定义****/
 #define STEER_PIN PWMA_CH2N_P13
-#define MIDDLE_ANGLE 4000
+#define MIDDLE_ANGLE 610    //530-670
 
 /****函数定义****/
 void Steer_Init(void);

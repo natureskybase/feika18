@@ -1,14 +1,14 @@
 #include "adc.h"
 
 /****ADC读取值****/
-uint16 adc1 = 0; 
-uint16 adc2 = 0;
-uint16 adc3 = 0; 
-uint16 adc4 = 0;
-uint16 adc5 = 0; 
-uint16 adc6 = 0;
-uint16 adc7 = 0; 
-uint16 adc8 = 0;
+int16 adc1 = 0; //峰值1800
+int16 adc2 = 0; //峰值2800
+int16 adc3 = 0; //峰值2800
+int16 adc4 = 0; //峰值1800
+int16 adc5 = 0; 
+int16 adc6 = 0;
+int16 adc7 = 0; 
+int16 adc8 = 0;
 
 
 /**************************************************************************
@@ -25,7 +25,6 @@ void My_Adc_Init(void)
 	adc_init(S_ADC5, ADC_SYSclk_DIV_2);	//ADC时钟频率：SYSclk/2
 	adc_init(S_ADC7, ADC_SYSclk_DIV_2);	//ADC时钟频率：SYSclk/2
 	adc_init(S_ADC11, ADC_SYSclk_DIV_2);	//ADC时钟频率：SYSclk/2
-
 }
 
 /**************************************************************************
@@ -63,3 +62,5 @@ void Read_Adc_Value(void)
 	adc7 = adc_mean_filter(S_ADC7,ADC_12BIT,5);		//对应板子上的IN7
 	adc8 = adc_mean_filter(S_ADC11,ADC_12BIT,5);	//对应板子上的IN8
 }
+
+

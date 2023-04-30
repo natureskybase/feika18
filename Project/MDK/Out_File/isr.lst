@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  isr                                                                26/03/23  21:09:44  PAGE 1   
+C251 COMPILER V5.60.0,  isr                                                                26/04/23  21:03:30  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE isr
 OBJECT MODULE PLACED IN .\Out_File\isr.obj
-COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\USER\src\isr.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE 
-                    -INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\
-                    -inc;..\USER\src) DEBUG PRINT(.\Out_File\isr.lst) TABS(2) OBJECT(.\Out_File\isr.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\USER\src\isr.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Lib
+                    -raries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src)
+                    - DEBUG PRINT(.\Out_File\isr.lst) TABS(2) OBJECT(.\Out_File\isr.obj) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    53   2              UART2_CLEAR_TX_FLAG;
    54   2          busy[2] = 0;
    55   2        }
-C251 COMPILER V5.60.0,  isr                                                                26/03/23  21:09:44  PAGE 2   
+C251 COMPILER V5.60.0,  isr                                                                26/04/23  21:03:30  PAGE 2   
 
    56   1          if(UART2_GET_RX_FLAG)
    57   1        {
@@ -123,6 +123,7 @@ stmt  level    source
   108   1      }
   109          
   110          #define LED P52
+*** WARNING C317 IN LINE 110 OF ..\USER\src\isr.c: attempt to redefine macro 'LED'
   111          void INT0_Isr() interrupt 0
   112          {
   113   1        LED = 0;  //点亮LED
@@ -133,9 +134,9 @@ stmt  level    source
   118   1      }
   119          void INT2_Isr() interrupt 10
   120          {
-  121   1        INT2_CLEAR_FLAG;  //清除中断标志
-C251 COMPILER V5.60.0,  isr                                                                26/03/23  21:09:44  PAGE 3   
+C251 COMPILER V5.60.0,  isr                                                                26/04/23  21:03:30  PAGE 3   
 
+  121   1        INT2_CLEAR_FLAG;  //清除中断标志
   122   1      }
   123          void INT3_Isr() interrupt 11
   124          {
@@ -169,55 +170,56 @@ stmt  level    source
   152          void TM4_Isr() interrupt 20
   153          {
   154   1        TIM4_CLEAR_FLAG; //清除中断标志
-  155   1      /*****************************************/ 
-  156   1        Read_Adc_Value();
-  157   1        
-  158   1        if((adc1<100)&&(adc4<100))
-  159   1        {
-  160   2          order_angle = 0;
-  161   2          order_speed = 0;
-  162   2        }
-  163   1        else
-  164   1        {
-  165   2          order_angle = Correct_Angle(30,5);
-  166   2          order_speed = 30;
-  167   2        } 
-  168   1        
-  169   1        /****电机、舵机闭环控制****/
-  170   1        Akeman_Control(order_speed,order_angle);  
-  171   1        
-  172   1      }
-  173          
-  174          //void  INT0_Isr()  interrupt 0;
-  175          //void  TM0_Isr()   interrupt 1;
-  176          //void  INT1_Isr()  interrupt 2;
-  177          //void  TM1_Isr()   interrupt 3;
-  178          //void  UART1_Isr() interrupt 4;
-  179          //void  ADC_Isr()   interrupt 5;
-  180          //void  LVD_Isr()   interrupt 6;
-  181          //void  PCA_Isr()   interrupt 7;
-  182          //void  UART2_Isr() interrupt 8;
-  183          //void  SPI_Isr()   interrupt 9;
-  184          //void  INT2_Isr()  interrupt 10;
-  185          //void  INT3_Isr()  interrupt 11;
-  186          //void  TM2_Isr()   interrupt 12;
-  187          //void  INT4_Isr()  interrupt 16;
-C251 COMPILER V5.60.0,  isr                                                                26/03/23  21:09:44  PAGE 4   
+  155   1      ///*****************************************/ 
+  156   1      
+  157   1      //  Read_Adc_Value();
+  158   1      //  
+  159   1      //  if((adc1<100)&&(adc4<100))
+  160   1      //  {
+  161   1      //    order_angle = 0;
+  162   1      //    order_speed = 0;
+  163   1      //  }
+  164   1      //  else
+  165   1      //  {
+  166   1      //    order_angle = Correct_Angle(140,1100,0);
+  167   1      //    order_speed = 30;
+  168   1      //  } 
+  169   1      //  
+  170   1      //  /****电机、舵机闭环控制****/
+  171   1      //  Akeman_Control(order_speed,order_angle);  
+  172   1        
+  173   1      }
+  174          
+  175          //void  INT0_Isr()  interrupt 0;
+  176          //void  TM0_Isr()   interrupt 1;
+  177          //void  INT1_Isr()  interrupt 2;
+  178          //void  TM1_Isr()   interrupt 3;
+  179          //void  UART1_Isr() interrupt 4;
+  180          //void  ADC_Isr()   interrupt 5;
+  181          //void  LVD_Isr()   interrupt 6;
+  182          //void  PCA_Isr()   interrupt 7;
+  183          //void  UART2_Isr() interrupt 8;
+  184          //void  SPI_Isr()   interrupt 9;
+  185          //void  INT2_Isr()  interrupt 10;
+  186          //void  INT3_Isr()  interrupt 11;
+C251 COMPILER V5.60.0,  isr                                                                26/04/23  21:03:30  PAGE 4   
 
-  188          //void  UART3_Isr() interrupt 17;
-  189          //void  UART4_Isr() interrupt 18;
-  190          //void  TM3_Isr()   interrupt 19;
-  191          //void  TM4_Isr()   interrupt 20;
-  192          //void  CMP_Isr()   interrupt 21;
-  193          //void  I2C_Isr()   interrupt 24;
-  194          //void  USB_Isr()   interrupt 25;
-  195          //void  PWM1_Isr()  interrupt 26;
-  196          //void  PWM2_Isr()  interrupt 27;
+  187          //void  TM2_Isr()   interrupt 12;
+  188          //void  INT4_Isr()  interrupt 16;
+  189          //void  UART3_Isr() interrupt 17;
+  190          //void  UART4_Isr() interrupt 18;
+  191          //void  TM3_Isr()   interrupt 19;
+  192          //void  TM4_Isr()   interrupt 20;
+  193          //void  CMP_Isr()   interrupt 21;
+  194          //void  I2C_Isr()   interrupt 24;
+  195          //void  USB_Isr()   interrupt 25;
+  196          //void  PWM1_Isr()  interrupt 26;
+  197          //void  PWM2_Isr()  interrupt 27;
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       433     ------
+  code size            =       326     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -236,4 +238,4 @@ Module Information          Static   Overlayable
 End of Module Information.
 
 
-C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

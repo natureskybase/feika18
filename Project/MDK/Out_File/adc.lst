@@ -1,25 +1,25 @@
-C251 COMPILER V5.60.0,  adc                                                                26/03/23  20:41:06  PAGE 1   
+C251 COMPILER V5.60.0,  adc                                                                26/04/23  17:58:02  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE adc
 OBJECT MODULE PLACED IN .\Out_File\adc.obj
-COMPILER INVOKED BY: D:\Application\Keil_v5_ARM\C251\BIN\C251.EXE ..\CODE\adc.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCD
-                    -IR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;
-                    -..\USER\src) DEBUG PRINT(.\Out_File\adc.lst) TABS(2) OBJECT(.\Out_File\adc.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\CODE\adc.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Librari
+                    -es\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src) DEB
+                    -UG PRINT(.\Out_File\adc.lst) TABS(2) OBJECT(.\Out_File\adc.obj) 
 
 stmt  level    source
 
     1          #include "adc.h"
     2          
     3          /****ADC读取值****/
-    4          uint16 adc1 = 0; 
-    5          uint16 adc2 = 0;
-    6          uint16 adc3 = 0; 
-    7          uint16 adc4 = 0;
-    8          uint16 adc5 = 0; 
-    9          uint16 adc6 = 0;
-   10          uint16 adc7 = 0; 
-   11          uint16 adc8 = 0;
+    4          int16 adc1 = 0; //峰值1800
+    5          int16 adc2 = 0; //峰值2800
+    6          int16 adc3 = 0; //峰值2800
+    7          int16 adc4 = 0; //峰值1800
+    8          int16 adc5 = 0; 
+    9          int16 adc6 = 0;
+   10          int16 adc7 = 0; 
+   11          int16 adc8 = 0;
    12          
    13          
    14          /**************************************************************************
@@ -36,46 +36,47 @@ stmt  level    source
    25   1        adc_init(S_ADC5, ADC_SYSclk_DIV_2); //ADC时钟频率：SYSclk/2
    26   1        adc_init(S_ADC7, ADC_SYSclk_DIV_2); //ADC时钟频率：SYSclk/2
    27   1        adc_init(S_ADC11, ADC_SYSclk_DIV_2);  //ADC时钟频率：SYSclk/2
-   28   1      
-   29   1      }
-   30          
-   31          /**************************************************************************
-   32          函数功能：adc均值滤波
-   33          输入参数：adc通道，时钟频率，读取次数
-   34          **************************************************************************/
-   35          uint16 adc_mean_filter(ADCN_enum adcn,ADC_SPEED_enum speed, uint8 count)
-   36          {
-   37   1        uint8 i;
-   38   1        uint32 sum;
-   39   1      
-   40   1        sum = 0;
-   41   1        for(i=0; i<count; i++)
-   42   1        {
-   43   2            sum += adc_once(adcn, speed);
-   44   2        }
-   45   1      
-   46   1        sum = sum/count;
-   47   1        return (uint16)sum;
-   48   1      }
-   49          
-   50          /**************************************************************************
-   51          函数功能：adc读取
-   52          **************************************************************************/
-   53          void Read_Adc_Value(void)
-   54          {
-   55   1      //  const uint16 adc1_last,adc2_last,adc3_last,adc4_last;
-   56   1        adc1 = adc_mean_filter(ADC_1,ADC_12BIT,5);    //对应板子上的IN1
-   57   1        adc2 = adc_mean_filter(ADC_2,ADC_12BIT,5);    //对应板子上的IN2
-C251 COMPILER V5.60.0,  adc                                                                26/03/23  20:41:06  PAGE 2   
+   28   1      }
+   29          
+   30          /**************************************************************************
+   31          函数功能：adc均值滤波
+   32          输入参数：adc通道，时钟频率，读取次数
+   33          **************************************************************************/
+   34          uint16 adc_mean_filter(ADCN_enum adcn,ADC_SPEED_enum speed, uint8 count)
+   35          {
+   36   1        uint8 i;
+   37   1        uint32 sum;
+   38   1      
+   39   1        sum = 0;
+   40   1        for(i=0; i<count; i++)
+   41   1        {
+   42   2            sum += adc_once(adcn, speed);
+   43   2        }
+   44   1      
+   45   1        sum = sum/count;
+   46   1        return (uint16)sum;
+   47   1      }
+   48          
+   49          /**************************************************************************
+   50          函数功能：adc读取
+   51          **************************************************************************/
+   52          void Read_Adc_Value(void)
+   53          {
+   54   1      //  const uint16 adc1_last,adc2_last,adc3_last,adc4_last;
+   55   1        adc1 = adc_mean_filter(ADC_1,ADC_12BIT,5);    //对应板子上的IN1
+   56   1        adc2 = adc_mean_filter(ADC_2,ADC_12BIT,5);    //对应板子上的IN2
+   57   1        adc3 = adc_mean_filter(ADC_3,ADC_12BIT,5);    //对应板子上的IN3
+C251 COMPILER V5.60.0,  adc                                                                26/04/23  17:58:02  PAGE 2   
 
-   58   1        adc3 = adc_mean_filter(ADC_3,ADC_12BIT,5);    //对应板子上的IN3
-   59   1        adc4 = adc_mean_filter(ADC_4,ADC_12BIT,5);    //对应板子上的IN4
-   60   1      //备用电感    
-   61   1        adc5 = adc_mean_filter(S_ADC1,ADC_12BIT,5);   //对应板子上的IN5
-   62   1        adc6 = adc_mean_filter(S_ADC5,ADC_12BIT,5);   //对应板子上的IN6
-   63   1        adc7 = adc_mean_filter(S_ADC7,ADC_12BIT,5);   //对应板子上的IN7
-   64   1        adc8 = adc_mean_filter(S_ADC11,ADC_12BIT,5);  //对应板子上的IN8
-   65   1      }
+   58   1        adc4 = adc_mean_filter(ADC_4,ADC_12BIT,5);    //对应板子上的IN4
+   59   1      //备用电感    
+   60   1        adc5 = adc_mean_filter(S_ADC1,ADC_12BIT,5);   //对应板子上的IN5
+   61   1        adc6 = adc_mean_filter(S_ADC5,ADC_12BIT,5);   //对应板子上的IN6
+   62   1        adc7 = adc_mean_filter(S_ADC7,ADC_12BIT,5);   //对应板子上的IN7
+   63   1        adc8 = adc_mean_filter(S_ADC11,ADC_12BIT,5);  //对应板子上的IN8
+   64   1      }
+   65          
+   66          
 
 
 Module Information          Static   Overlayable

@@ -152,22 +152,23 @@ void TM3_Isr() interrupt 19
 void TM4_Isr() interrupt 20
 {
 	TIM4_CLEAR_FLAG; //清除中断标志
-/*****************************************/	
-	Read_Adc_Value();
-	
-	if((adc1<100)&&(adc4<100))
-	{
-		order_angle = 0;
-		order_speed = 0;
-	}
-	else
-	{
-		order_angle = Correct_Angle(30,5);
-		order_speed = 30;
-	}	
-	
-	/****电机、舵机闭环控制****/
-	Akeman_Control(order_speed,order_angle);	
+///*****************************************/	
+
+//	Read_Adc_Value();
+//	
+//	if((adc1<100)&&(adc4<100))
+//	{
+//		order_angle = 0;
+//		order_speed = 0;
+//	}
+//	else
+//	{
+//		order_angle = Correct_Angle(140,1100,0);
+//		order_speed = 30;
+//	}	
+//	
+//	/****电机、舵机闭环控制****/
+//	Akeman_Control(order_speed,order_angle);	
 	
 }
 

@@ -19,14 +19,6 @@
 
 #include "headfile.h"
 
-
-
-
-#define BUZZER P50	// 高电平驱动
-#define LED P07     // 高电平驱动
-
-
-
 /*
  * 系统频率，可查看board.h中的 FOSC 宏定义修改。
  * board.h文件中FOSC的值设置为0,则程序自动设置系统频率为33.1776MHZ
@@ -37,21 +29,49 @@
 
 void main()
 {
-	board_init();			// 初始化寄存器,勿删除此句代码。	
+	board_init();
+
+	// 初始化寄存器,勿删除此句代码。	
 	// 此处编写用户代码(例如：外设初始化代码等)
-	PID_struct_init(&pid_left_,POSITION_PID,10000,5000,0,0,0); //pid_left_PID初始化
-	PID_struct_init(&pid_right_,POSITION_PID,10000,5000,0,0,0);	//pid_right_PID初始化
+	PID_struct_init(&pid_left_,POSITION_PID,10000,5000,30,0.5,22); //pid_left_PID初始化
+	PID_struct_init(&pid_right_,POSITION_PID,10000,5000,28,0.4,11);	//pid_right_PID初始化
 	My_Adc_Init(); //adc初始化
 	Motor_Init(); //电机初始化
 	Steer_Init(); //舵机初始化
 	Brushless_Init(); //无刷初始化
 	OLED_Init();    //OLED初始化
 	Timer4_Init(10);
+	LED=0;	//默认关闭LED
+	BUZZER=0;	//默认关闭buzzer
 	
+//	pwm_init(PWMB_CH4_P23,10000,0);
+//	uart_init(UART_2,UART2_RX_P10,UART2_TX_P11,38400, TIM_2);
     while(1)
 	{
-		 // 此处编写需要循环执行的代码
 		
+		
+		printf("ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d    adc_err=%f\r\n",adc1,adc2,adc3,adc4,adc_err);
+//		printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc_err_array[3],adc_err_array[4],adc_err);
+//		printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
+//		printf("%d %d\r\n",adc1,adc2);
+//		printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
+//		printf("okk\r\n");
+		
+		PID_on();
+		order_speed = 2500;
+		Motor_Control(order_speed,order_speed);
+		
+		Read_Adc_Value();
+		ADC_error_processing(1,0,0);
+		ADC_error_window_filtering();
+		ADC_error_weight_filtering();
+		order_angle = Correct_Angle(130,0,0.3);//165,500,0.5
+		Steer_Spin(order_angle);
+		
+//		Akeman_Control(order_speed,order_angle);
+		
+
+		delay_ms(10);
   }
 }
 

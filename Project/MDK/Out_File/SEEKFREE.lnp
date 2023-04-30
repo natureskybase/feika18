@@ -38,7 +38,8 @@
 ".\Out_File\timer.obj",
 ".\Out_File\oled.obj",
 ".\Out_File\brushless.obj",
-".\Out_File\pid.obj" 
+".\Out_File\pid.obj",
+".\Out_File\host.obj" 
 TO ".\Out_File\SEEKFREE" 
 PRINT(".\Out_File\SEEKFREE.map") CASE DISABLEWARNING (16,57) 
 REMOVEUNUSED 

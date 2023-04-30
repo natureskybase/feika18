@@ -8,6 +8,11 @@ akeman_t akeman_right;
 uint8 pid_flag=0;					//电机闭环开启标志
 float order_angle=0;			//目标角度
 float order_speed=0;			//目标速度
+float adc_err=0;       //电感误差
+float adc_err_array[5];//窗口电感误差
+int16 window_flag=1;   //窗口标志位
+int16 Roundabout_flag=0;//环岛检测标志位
+float ADC_error_a=0;     //电感误差加速度(ms)
 
 /**************************************************************************
 函数功能：舵机角度和电机速度的协同控制
@@ -37,7 +42,7 @@ void Akeman_Control(float basic_speed,float target_angle)
 	{
 		/****电机闭环****/
 		Motor_PID_Control(akeman_left.current_speed ,akeman_left.target_speed ,akeman_right.current_speed ,akeman_right.target_speed);
-	
+		
 		/****舵机转角****/
 		Steer_Spin(target_angle);
 	}
@@ -51,6 +56,7 @@ void Motor_PID_Control(float current_l,float target_l,float current_r,float targ
 {
 	static float pwm_l=0;
 	static float pwm_r=0;	
+	
 	
 //	static float pwm_l=0,error_l=0,last_error_l=0,prev_error_l=0;
 //	static float pwm_r=0,error_r=0,last_error_r=0,prev_error_r=0;
@@ -85,18 +91,98 @@ void Motor_PID_Control(float current_l,float target_l,float current_r,float targ
 	pwm_r=pid_calc(&pid_right_,current_r,target_r);	
 	Motor_Control((int32)pwm_l,(int32)pwm_r);
 }
+/**************************************************************************
+函数功能：电感差比和运算
+输入参数：A,B为差比和权重
+**************************************************************************/
+float ADC_error_processing(float A,float B,float compensation)
+{
+//	考虑电感值误差处理
+//	adc_err = (1/1.0*adc1-1/1.0*adc4)/(1/1.0*adc1+1/1.0*adc4);
+//	adc_err = (adc4 - adc1)/10;
+	adc_err = (A*(adc1-adc4)/(float)(adc1+adc4))+(B*(adc2-adc3)/(float)(adc2+adc3))+compensation/100;
+	return adc_err;
+}
+
 
 /**************************************************************************
-函数功能：根据adc读值修正角度
-输入参数：PD控制参数
+函数功能：一阶低通滤波
+输入参数：无
 **************************************************************************/
-float Correct_Angle(float kp,float kd)
+float ADC_error_weight_filtering(void)
 {
-	float adc_err,target_angle;
 	static float adc_err_last = 0;
-	adc_err = (adc1-adc4)/(float)(adc1+adc4);
-	target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
+	adc_err = (0.8)*adc_err+(0.2)*adc_err_last;
 	adc_err_last = adc_err;
+	
+	return adc_err;
+}
+
+/**************************************************************************
+函数功能：窗口滤波//有待求证
+输入参数：窗口数组
+**************************************************************************/
+float ADC_error_window_filtering(void)
+{
+	adc_err_array[window_flag]=adc_err;
+	window_flag ++;
+	if(window_flag==5)
+		window_flag=0;
+	if(adc_err_array[0]!=0)
+		adc_err=(adc_err_array[1]+adc_err_array[2]+adc_err_array[3]+adc_err_array[4])/4;
+	return adc_err;
+}
+
+/**************************************************************************
+函数功能：ADC_err采集值加速度
+输入参数：无
+**************************************************************************/
+float ADC_error_acceleration(void)
+{
+	ADC_error_a=(adc_err_array[3]+adc_err_array[4]-adc_err_array[1]-adc_err_array[2])/4*100;
+	return ADC_error_a;
+}
+/**************************************************************************
+函数功能：环岛检测
+输入参数：无
+**************************************************************************/
+void Roundabout_detection(void)
+{
+	float adc_err_Roundabout;
+	adc_err_Roundabout = ADC_error_processing(0.2,0.8,0);
+//	if()//入环检测
+//	Roundabout_flag = 1;
+	
+}
+/**************************************************************************
+函数功能：弯道检测
+输入参数：无
+**************************************************************************/
+void Corners_detection(void)
+{
+
+}
+/**************************************************************************
+函数功能：根据adc读值修正角度
+输入参数：PID控制参数
+**************************************************************************/
+float Correct_Angle(float kp,float kd,float ki)
+{
+	float target_angle;
+	float target_angle_last;
+	static float adc_err_last = 0;
+
+//	pd控制方案
+// 	target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
+//	kp+=adc_err*adc_err*0.1;//加入动态变化
+	
+//	pid控制方案
+	target_angle = kp*adc_err + +kd*(adc_err-adc_err_last)+(ki+=ki*adc_err);
+	target_angle=0.8*target_angle+0.2*target_angle_last;
+	target_angle_last=target_angle;
+	
+	adc_err_last = adc_err;
+	
 	return target_angle;
 }
 

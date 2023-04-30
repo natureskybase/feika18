@@ -2,6 +2,8 @@
 #define __HEADFILE_H_
 
 
+#define BUZZER P50	// 高电平驱动
+#define LED P07     // 高电平驱动
 
 
 #include "isr.h"
