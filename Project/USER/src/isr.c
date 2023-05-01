@@ -149,26 +149,44 @@ void TM3_Isr() interrupt 19
 	
 }
 
-void TM4_Isr() interrupt 20
+void TM4_Isr() interrupt 20    //函数
 {
 	TIM4_CLEAR_FLAG; //清除中断标志
 ///*****************************************/	
+	if(adc1 <500 && adc1 <500 && adc2 <500 && adc3 <500 && adc4 <500)
+		order_speed = 0;
 
-//	Read_Adc_Value();
-//	
-//	if((adc1<100)&&(adc4<100))
-//	{
-//		order_angle = 0;
-//		order_speed = 0;
-//	}
-//	else
-//	{
-//		order_angle = Correct_Angle(140,1100,0);
-//		order_speed = 30;
-//	}	
-//	
-//	/****电机、舵机闭环控制****/
-//	Akeman_Control(order_speed,order_angle);	
+	Motor_Control(order_speed,order_speed);
+	
+	Read_Adc_Value();
+	ADC_error_processing(1,0,0);
+	ADC_error_window_filtering();
+	ADC_error_weight_filtering();
+	
+	Dir_judge_flag = Direct_judge();
+	
+	if(Dir_judge_flag == 0)
+	{
+		order_angle = Correct_Angle(127,50,0.3);//165,500,0.5
+		order_speed = 2600;
+	}
+	if(Dir_judge_flag == 1 || Dir_judge_flag == 2)
+	{
+		order_angle = Correct_Angle(150,100,0);
+		order_speed = 2300;
+	}
+	if(Dir_judge_flag == 8 || Dir_judge_flag == 9)
+	{
+		order_angle = Correct_Angle(165,100,0);
+		order_speed = 2600;
+	}
+	
+	lost_line_judge();//丢线检测
+	lostline_deal();  //丢线处理
+	
+	Steer_Spin(order_angle);
+	
+	
 	
 }
 

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  oled                                                               24/04/23  21:34:11  PAGE 1   
+C251 COMPILER V5.60.0,  oled                                                               01/05/23  19:19:56  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE oled
@@ -66,7 +66,7 @@ stmt  level    source
    55          //  {
    56          //    a=1800;
    57          //    while(a--);
-C251 COMPILER V5.60.0,  oled                                                               24/04/23  21:34:11  PAGE 2   
+C251 COMPILER V5.60.0,  oled                                                               01/05/23  19:19:56  PAGE 2   
 
    58          //    ms--;
    59          //  }
@@ -134,7 +134,7 @@ stmt  level    source
   121   2      
   122   2          for(i=0;i<8;i++)
   123   2          {       
-C251 COMPILER V5.60.0,  oled                                                               24/04/23  21:34:11  PAGE 3   
+C251 COMPILER V5.60.0,  oled                                                               01/05/23  19:19:56  PAGE 3   
 
   124   3            OLED_SCLK_Clr();
   125   3            if(dat&0x80)
@@ -202,7 +202,7 @@ stmt  level    source
   185   1          if(x>Max_Column-1){x=0;y=y+2;}
   186   1          if(SIZE ==16)
   187   1            {
-C251 COMPILER V5.60.0,  oled                                                               24/04/23  21:34:11  PAGE 4   
+C251 COMPILER V5.60.0,  oled                                                               01/05/23  19:19:56  PAGE 4   
 
   188   2            OLED_Set_Pos(x,y);  
   189   2            for(i=0;i<8;i++)
@@ -270,7 +270,7 @@ stmt  level    source
   245          //ÏÔÊ¾ºº×Ö
   246          void OLED_ShowCHinese(u8 x,u8 y,u8 no)
   247          {               
-C251 COMPILER V5.60.0,  oled                                                               24/04/23  21:34:11  PAGE 5   
+C251 COMPILER V5.60.0,  oled                                                               01/05/23  19:19:56  PAGE 5   
 
   248   1        u8 t,adder=0;
   249   1        OLED_Set_Pos(x,y);  
@@ -338,7 +338,7 @@ stmt  level    source
   307   1        OLED_WR_Byte(0x80,OLED_CMD);//--set divide ratio, Set Clock as 100 Frames/Sec
   308   1        OLED_WR_Byte(0xD9,OLED_CMD);//--set pre-charge period
   309   1        OLED_WR_Byte(0xF1,OLED_CMD);//Set Pre-Charge as 15 Clocks & Discharge as 1 Clock
-C251 COMPILER V5.60.0,  oled                                                               24/04/23  21:34:11  PAGE 6   
+C251 COMPILER V5.60.0,  oled                                                               01/05/23  19:19:56  PAGE 6   
 
   310   1        OLED_WR_Byte(0xDA,OLED_CMD);//--set com pins hardware configuration
   311   1        OLED_WR_Byte(0x12,OLED_CMD);
@@ -407,7 +407,7 @@ Module Information          Static   Overlayable
 ------------------------------------------------
   code size            =      1136     ------
   ecode size           =    ------     ------
-C251 COMPILER V5.60.0,  oled                                                               24/04/23  21:34:11  PAGE 7   
+C251 COMPILER V5.60.0,  oled                                                               01/05/23  19:19:56  PAGE 7   
 
   data size            =    ------     ------
   idata size           =    ------     ------

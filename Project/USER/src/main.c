@@ -50,28 +50,16 @@ void main()
 	{
 		
 		
-		printf("ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d    adc_err=%f\r\n",adc1,adc2,adc3,adc4,adc_err);
+		printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc1,adc2,adc3,adc4,adc_err);
 //		printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc_err_array[3],adc_err_array[4],adc_err);
 //		printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
-//		printf("%d %d\r\n",adc1,adc2);
+//		printf("Dir_judge_flag = %d \r\n",Dir_judge_flag);
 //		printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
-//		printf("okk\r\n");
+
 		
-		PID_on();
-		order_speed = 2500;
-		Motor_Control(order_speed,order_speed);
-		
-		Read_Adc_Value();
-		ADC_error_processing(1,0,0);
-		ADC_error_window_filtering();
-		ADC_error_weight_filtering();
-		order_angle = Correct_Angle(130,0,0.3);//165,500,0.5
-		Steer_Spin(order_angle);
 		
 //		Akeman_Control(order_speed,order_angle);
-		
-
-		delay_ms(10);
+		delay_ms(100);
   }
 }
 

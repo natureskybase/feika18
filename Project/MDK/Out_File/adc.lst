@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  adc                                                                26/04/23  17:58:02  PAGE 1   
+C251 COMPILER V5.60.0,  adc                                                                01/05/23  19:19:55  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE adc
@@ -66,7 +66,7 @@ stmt  level    source
    55   1        adc1 = adc_mean_filter(ADC_1,ADC_12BIT,5);    //对应板子上的IN1
    56   1        adc2 = adc_mean_filter(ADC_2,ADC_12BIT,5);    //对应板子上的IN2
    57   1        adc3 = adc_mean_filter(ADC_3,ADC_12BIT,5);    //对应板子上的IN3
-C251 COMPILER V5.60.0,  adc                                                                26/04/23  17:58:02  PAGE 2   
+C251 COMPILER V5.60.0,  adc                                                                01/05/23  19:19:55  PAGE 2   
 
    58   1        adc4 = adc_mean_filter(ADC_4,ADC_12BIT,5);    //对应板子上的IN4
    59   1      //备用电感    

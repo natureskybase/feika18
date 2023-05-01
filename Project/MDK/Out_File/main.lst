@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               27/04/23  18:28:28  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               01/05/23  20:24:34  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -63,39 +63,28 @@ stmt  level    source
    50   1        {
    51   2          
    52   2          
-   53   2          printf("ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d    adc_err=%f\r\n",adc1,adc2,adc3,adc4,adc_err);
+   53   2          printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc
+             -1,adc2,adc3,adc4,adc_err);
    54   2      //    printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc
-             -_err_array[3],adc_err_array[4],adc_err);
-C251 COMPILER V5.60.0,  main                                                               27/04/23  18:28:28  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               01/05/23  20:24:34  PAGE 2   
 
+             -_err_array[3],adc_err_array[4],adc_err);
    55   2      //    printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
-   56   2      //    printf("%d %d\r\n",adc1,adc2);
+   56   2      //    printf("Dir_judge_flag = %d \r\n",Dir_judge_flag);
    57   2      //    printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
-   58   2      //    printf("okk\r\n");
+   58   2      
    59   2          
-   60   2          PID_on();
-   61   2          order_speed = 2500;
-   62   2          Motor_Control(order_speed,order_speed);
-   63   2          
-   64   2          Read_Adc_Value();
-   65   2          ADC_error_processing(1,0,0);
-   66   2          ADC_error_window_filtering();
-   67   2          ADC_error_weight_filtering();
-   68   2          order_angle = Correct_Angle(130,0,0.3);//165,500,0.5
-   69   2          Steer_Spin(order_angle);
-   70   2          
-   71   2      //    Akeman_Control(order_speed,order_angle);
-   72   2          
-   73   2      
-   74   2          delay_ms(10);
-   75   2        }
-   76   1      }
-   77          
+   60   2          
+   61   2      //    Akeman_Control(order_speed,order_angle);
+   62   2          delay_ms(100);
+   63   2        }
+   64   1      }
+   65          
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       280     ------
+  code size            =       209     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -110,7 +99,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        55     ------
+  hconst size          =        74     ------
 End of Module Information.
 
 

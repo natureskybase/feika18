@@ -8,11 +8,14 @@ akeman_t akeman_right;
 uint8 pid_flag=0;					//电机闭环开启标志
 float order_angle=0;			//目标角度
 float order_speed=0;			//目标速度
-float adc_err=0;       //电感误差
-float adc_err_array[5];//窗口电感误差
-int16 window_flag=1;   //窗口标志位
-int16 Roundabout_flag=0;//环岛检测标志位
+float adc_err=0;         //电感误差
+float adc_err_array[5];  //窗口电感误差
+int16 window_flag=1;   	 //窗口标志位
+int16 Roundabout_flag=0; //环岛检测标志位
 float ADC_error_a=0;     //电感误差加速度(ms)
+int16 lostline_flag;     //丢线标志
+int16 lostline_dir;      //左,右丢线标志
+int16 Dir_judge_flag;    //位置检测标志位
 
 /**************************************************************************
 函数功能：舵机角度和电机速度的协同控制
@@ -148,24 +151,24 @@ float ADC_error_acceleration(void)
 **************************************************************************/
 int16 Direct_judge(void)
 {
-	static int16 res = 0;  // 小车当运行位置:0表示直道 
+	 static int16 res = 0;  // 小车当运行位置:0表示直道 
 	
 	//  阈值判断方向 //
-	if((res == 0 && adc_err)&&(res != 2 && adc_err))
+	if(res == 0 && res != 2 && adc_err >= 0.29)
 	res = 1;        // 左转弯
 	
-	else if((res == 0 && adc_err)&&(res != 1 && adc_err))
+	else if(res == 0 && res != 1 && adc_err <= -0.29)
 	res = 2;        // 右转弯
 	
-	else if()  
-	res = 0;				// 直道
+	else if(adc_err >= -0.29 && adc_err <= 0.29)
+	res = 0;				// 直道(暂时未考虑环岛的影响)
 
 	// 过渡状态的判断 //
-	if(res == 2 && adc_err >= 0 && adc1 != 100)
-	res = 8;
+	if(adc_err >= 0.6 && adc4 <= 500)
+	res = 8;        //左转弯过渡状态
 	
-	else if(res == 1 && adc_err <= 0 && adc4!= 100)
-	res = 9;
+	else if(adc_err <= -0.6 && adc1 <= 500)
+	res = 9;        //右转弯过渡状态
 	
 	return res;
 }
@@ -176,7 +179,8 @@ int16 Direct_judge(void)
 **************************************************************************/
 void lost_line_judge(void)
 {
-	int8 i,L_count=0,R_count=0;// 左右计数 
+	int8 i,L_count=0,R_count=0;// 左右计数
+	lostline_dir = 0; 	
 	if(lostline_flag==0)//丢线标志为0时进入
 	{
 		if(adc1 < 500 && adc2 < 500 && adc3 < 500 && adc4 < 500) //进入丢线条件
@@ -186,7 +190,7 @@ void lost_line_judge(void)
 		{
 			if(adc_err_array[i]<0)
 			 R_count++;
-			if(adc_err_array[i]>=0)
+			if(adc_err_array[i]>0)
 			 L_count++;
 		}
 		if(L_count>R_count)
@@ -206,10 +210,10 @@ void lostline_deal(void)
 	if(lostline_flag==1)
 		{
 			if(lostline_dir==1)//左丢线
-				order_angle=-100;
+				order_angle = -100;
 			
 			if(lostline_dir==2)//右丢线
-				order_angle= 100;
+				order_angle = 100;
 
 			if(adc3 >= 500 && adc4 >= 500)
 				lostline_flag=0;
@@ -225,7 +229,7 @@ float Correct_Angle(float kp,float kd,float ki)
 	float target_angle;
 	float target_angle_last;
 	static float adc_err_last = 0;
-
+	
 //	pd控制方案
 // 	target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
 //	kp+=adc_err*adc_err*0.1;//加入动态变化

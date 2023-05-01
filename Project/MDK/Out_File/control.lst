@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  control                                                            27/04/23  18:18:34  PAGE 1   
+C251 COMPILER V5.60.0,  control                                                            01/05/23  21:47:00  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE control
@@ -19,222 +19,281 @@ stmt  level    source
     8          uint8 pid_flag=0;         //电机闭环开启标志
     9          float order_angle=0;      //目标角度
    10          float order_speed=0;      //目标速度
-   11          float adc_err=0;       //电感误差
-   12          float adc_err_array[5];//窗口电感误差
-   13          int16 window_flag=1;   //窗口标志位
-   14          int16 Roundabout_flag=0;//环岛检测标志位
+   11          float adc_err=0;         //电感误差
+   12          float adc_err_array[5];  //窗口电感误差
+   13          int16 window_flag=1;     //窗口标志位
+   14          int16 Roundabout_flag=0; //环岛检测标志位
    15          float ADC_error_a=0;     //电感误差加速度(ms)
-   16          
-   17          /**************************************************************************
-   18          函数功能：舵机角度和电机速度的协同控制
-   19          输入参数：小车基准速度（单位：mm/s），舵机角度（单位：°）
-   20          **************************************************************************/
-   21          void Akeman_Control(float basic_speed,float target_angle)
-   22          {
-   23   1        float akeman_diff;  //左右轮相对basic_speed的差速
-   24   1        
-   25   1        /****读取编码器数值****/
-   26   1        Encoder_Read();
-   27   1        Encoder_Clear();
-   28   1        
-   29   1        /****计算两电机实际转速****/
-   30   1        //编码器是1024线，4倍频，齿数为30
-   31   1        //车轮直径56mm，与编码器对应齿数为68
-   32   1        akeman_left.current_speed  = pulse_left *0.20603922;
-   33   1        akeman_right.current_speed = pulse_right*0.20603922;
-   34   1        
-   35   1        /****计算两电机目标转速****/
-   36   1        akeman_diff = basic_speed*(14.2*tan(target_angle*3.14/180.0))/20.0; //相对差速
-   37   1        akeman_left.target_speed  = basic_speed - akeman_diff;
-   38   1        akeman_right.target_speed = basic_speed + akeman_diff;
-   39   1        
-   40   1        /****PID开启时控制电机和舵机****/
-   41   1        if(pid_flag)
-   42   1        {
-   43   2          /****电机闭环****/
-   44   2          Motor_PID_Control(akeman_left.current_speed ,akeman_left.target_speed ,akeman_right.current_speed ,akem
+   16          int16 lostline_flag;     //丢线标志
+   17          int16 lostline_dir;      //左,右丢线标志
+   18          int16 Dir_judge_flag;    //位置检测标志位
+   19          
+   20          /**************************************************************************
+   21          函数功能：舵机角度和电机速度的协同控制
+   22          输入参数：小车基准速度（单位：mm/s），舵机角度（单位：°）
+   23          **************************************************************************/
+   24          void Akeman_Control(float basic_speed,float target_angle)
+   25          {
+   26   1        float akeman_diff;  //左右轮相对basic_speed的差速
+   27   1        
+   28   1        /****读取编码器数值****/
+   29   1        Encoder_Read();
+   30   1        Encoder_Clear();
+   31   1        
+   32   1        /****计算两电机实际转速****/
+   33   1        //编码器是1024线，4倍频，齿数为30
+   34   1        //车轮直径56mm，与编码器对应齿数为68
+   35   1        akeman_left.current_speed  = pulse_left *0.20603922;
+   36   1        akeman_right.current_speed = pulse_right*0.20603922;
+   37   1        
+   38   1        /****计算两电机目标转速****/
+   39   1        akeman_diff = basic_speed*(14.2*tan(target_angle*3.14/180.0))/20.0; //相对差速
+   40   1        akeman_left.target_speed  = basic_speed - akeman_diff;
+   41   1        akeman_right.target_speed = basic_speed + akeman_diff;
+   42   1        
+   43   1        /****PID开启时控制电机和舵机****/
+   44   1        if(pid_flag)
+   45   1        {
+   46   2          /****电机闭环****/
+   47   2          Motor_PID_Control(akeman_left.current_speed ,akeman_left.target_speed ,akeman_right.current_speed ,akem
              -an_right.target_speed);
-   45   2          
-   46   2          /****舵机转角****/
-   47   2          Steer_Spin(target_angle);
-   48   2        }
-   49   1      }
-   50          
-   51          /**************************************************************************
-   52          函数功能：电机PID闭环控制
-   53          输入参数：左右轮的实际与目标转速
-   54          **************************************************************************/
-   55          void Motor_PID_Control(float current_l,float target_l,float current_r,float target_r)
-   56          {
-C251 COMPILER V5.60.0,  control                                                            27/04/23  18:18:34  PAGE 2   
+   48   2          
+   49   2          /****舵机转角****/
+   50   2          Steer_Spin(target_angle);
+   51   2        }
+   52   1      }
+   53          
+   54          /**************************************************************************
+   55          函数功能：电机PID闭环控制
+   56          输入参数：左右轮的实际与目标转速
+C251 COMPILER V5.60.0,  control                                                            01/05/23  21:47:00  PAGE 2   
 
-   57   1        static float pwm_l=0;
-   58   1        static float pwm_r=0; 
-   59   1        
-   60   1        
-   61   1      //  static float pwm_l=0,error_l=0,last_error_l=0,prev_error_l=0;
-   62   1      //  static float pwm_r=0,error_r=0,last_error_r=0,prev_error_r=0;
-   63   1      //  float kp_l=akeman_left.kp ,ki_l=akeman_left.ki ,kd_l=akeman_left.kd ;
-   64   1      //  float kp_r=akeman_right.kp,ki_r=akeman_right.ki,kd_r=akeman_right.kd;
-   65   1      //  
-   66   1      //  /****计算本次偏差****/
-   67   1      //  error_l = target_l - current_l;
-   68   1      //  error_r = target_r - current_r;
-   69   1      //  
-   70   1      //  /****若实际速度为0，则不加积分项****/
-   71   1      //  if(current_l==0) ki_l=0;
-   72   1      //  if(current_r==0) ki_r=0;
-   73   1      //  
-   74   1      //  /****增量式PID控制器****/
-   75   1      //  pwm_l += (int32)(kp_l*(error_l-last_error_l) + ki_l*error_l + kd_l*(error_l-2*last_error_l+prev_error_
+   57          **************************************************************************/
+   58          void Motor_PID_Control(float current_l,float target_l,float current_r,float target_r)
+   59          {
+   60   1        static float pwm_l=0;
+   61   1        static float pwm_r=0; 
+   62   1        
+   63   1        
+   64   1      //  static float pwm_l=0,error_l=0,last_error_l=0,prev_error_l=0;
+   65   1      //  static float pwm_r=0,error_r=0,last_error_r=0,prev_error_r=0;
+   66   1      //  float kp_l=akeman_left.kp ,ki_l=akeman_left.ki ,kd_l=akeman_left.kd ;
+   67   1      //  float kp_r=akeman_right.kp,ki_r=akeman_right.ki,kd_r=akeman_right.kd;
+   68   1      //  
+   69   1      //  /****计算本次偏差****/
+   70   1      //  error_l = target_l - current_l;
+   71   1      //  error_r = target_r - current_r;
+   72   1      //  
+   73   1      //  /****若实际速度为0，则不加积分项****/
+   74   1      //  if(current_l==0) ki_l=0;
+   75   1      //  if(current_r==0) ki_r=0;
+   76   1      //  
+   77   1      //  /****增量式PID控制器****/
+   78   1      //  pwm_l += (int32)(kp_l*(error_l-last_error_l) + ki_l*error_l + kd_l*(error_l-2*last_error_l+prev_error_
              -l))*100;
-   76   1      //  pwm_r += (int32)(kp_r*(error_r-last_error_r) + ki_r*error_r + kd_r*(error_r-2*last_error_r+prev_error_
+   79   1      //  pwm_r += (int32)(kp_r*(error_r-last_error_r) + ki_r*error_r + kd_r*(error_r-2*last_error_r+prev_error_
              -r))*100;
-   77   1      //  
-   78   1      //  /****限幅****/
-   79   1      //  if(pwm_l >  PWM_DUTY_MAX) pwm_l =  PWM_DUTY_MAX;
-   80   1      //  if(pwm_l < -PWM_DUTY_MAX) pwm_l = -PWM_DUTY_MAX;
-   81   1      //  if(pwm_r >  PWM_DUTY_MAX) pwm_r =  PWM_DUTY_MAX;
-   82   1      //  if(pwm_r < -PWM_DUTY_MAX) pwm_r = -PWM_DUTY_MAX;
-   83   1      //  
-   84   1      //  /****保存前两次偏差****/
-   85   1      //  prev_error_l = last_error_l;
-   86   1      //  prev_error_r = last_error_r;
-   87   1      //  last_error_l = error_l;
-   88   1      //  last_error_r = error_r;
-   89   1      
-   90   1        pwm_l=pid_calc(&pid_left_,current_l,target_l);
-   91   1        pwm_r=pid_calc(&pid_right_,current_r,target_r); 
-   92   1        Motor_Control((int32)pwm_l,(int32)pwm_r);
-   93   1      }
-   94          /**************************************************************************
-   95          函数功能：电感差比和运算
-   96          输入参数：A,B为差比和权重
-   97          **************************************************************************/
-   98          float ADC_error_processing(float A,float B,float compensation)
-   99          {
-  100   1      //  考虑电感值误差处理
-  101   1      //  adc_err = (1/1.0*adc1-1/1.0*adc4)/(1/1.0*adc1+1/1.0*adc4);
-  102   1      //  adc_err = (adc4 - adc1)/10;
-  103   1        adc_err = (A*(adc1-adc4)/(float)(adc1+adc4))+(B*(adc2-adc3)/(float)(adc2+adc3))+compensation/100;
-  104   1        return adc_err;
-  105   1      }
-  106          
-  107          
-  108          /**************************************************************************
-  109          函数功能：一阶低通滤波
-  110          输入参数：无
-  111          **************************************************************************/
-  112          float ADC_error_weight_filtering(void)
-  113          {
-  114   1        static float adc_err_last = 0;
-  115   1        adc_err = (0.8)*adc_err+(0.2)*adc_err_last;
-  116   1        adc_err_last = adc_err;
-  117   1        
-  118   1        return adc_err;
-  119   1      }
-  120          
-C251 COMPILER V5.60.0,  control                                                            27/04/23  18:18:34  PAGE 3   
+   80   1      //  
+   81   1      //  /****限幅****/
+   82   1      //  if(pwm_l >  PWM_DUTY_MAX) pwm_l =  PWM_DUTY_MAX;
+   83   1      //  if(pwm_l < -PWM_DUTY_MAX) pwm_l = -PWM_DUTY_MAX;
+   84   1      //  if(pwm_r >  PWM_DUTY_MAX) pwm_r =  PWM_DUTY_MAX;
+   85   1      //  if(pwm_r < -PWM_DUTY_MAX) pwm_r = -PWM_DUTY_MAX;
+   86   1      //  
+   87   1      //  /****保存前两次偏差****/
+   88   1      //  prev_error_l = last_error_l;
+   89   1      //  prev_error_r = last_error_r;
+   90   1      //  last_error_l = error_l;
+   91   1      //  last_error_r = error_r;
+   92   1      
+   93   1        pwm_l=pid_calc(&pid_left_,current_l,target_l);
+   94   1        pwm_r=pid_calc(&pid_right_,current_r,target_r); 
+   95   1        Motor_Control((int32)pwm_l,(int32)pwm_r);
+   96   1      }
+   97          /**************************************************************************
+   98          函数功能：电感差比和归一化运算
+   99          输入参数：A,B为差比和权重
+  100          **************************************************************************/
+  101          float ADC_error_processing(float A,float B,float compensation)
+  102          {
+  103   1      //  考虑电感值误差处理
+  104   1      //  adc_err = (1/1.0*adc1-1/1.0*adc4)/(1/1.0*adc1+1/1.0*adc4);
+  105   1      //  adc_err = (adc4 - adc1)/10;
+  106   1        adc_err = (A*(adc1-adc4)/(float)(adc1+adc4))+(B*(adc2-adc3)/(float)(adc2+adc3))+compensation/100;
+  107   1        return adc_err;
+  108   1      }
+  109          
+  110          
+  111          /**************************************************************************
+  112          函数功能：一阶低通滤波
+  113          输入参数：无
+  114          **************************************************************************/
+  115          float ADC_error_weight_filtering(void)
+  116          {
+  117   1        static float adc_err_last = 0;
+  118   1        adc_err = (0.8)*adc_err+(0.2)*adc_err_last;
+  119   1        adc_err_last = adc_err;
+  120   1        
+C251 COMPILER V5.60.0,  control                                                            01/05/23  21:47:00  PAGE 3   
 
-  121          /**************************************************************************
-  122          函数功能：窗口滤波//有待求证
-  123          输入参数：窗口数组
-  124          **************************************************************************/
-  125          float ADC_error_window_filtering(void)
-  126          {
-  127   1        adc_err_array[window_flag]=adc_err;
-  128   1        window_flag ++;
-  129   1        if(window_flag==5)
-  130   1          window_flag=0;
-  131   1        if(adc_err_array[0]!=0)
-  132   1          adc_err=(adc_err_array[1]+adc_err_array[2]+adc_err_array[3]+adc_err_array[4])/4;
-  133   1        return adc_err;
-  134   1      }
-  135          
-  136          /**************************************************************************
-  137          函数功能：ADC_err采集值加速度
-  138          输入参数：无
-  139          **************************************************************************/
-  140          float ADC_error_acceleration(void)
-  141          {
-  142   1        ADC_error_a=(adc_err_array[3]+adc_err_array[4]-adc_err_array[1]-adc_err_array[2])/4*100;
-  143   1        return ADC_error_a;
-  144   1      }
-  145          /**************************************************************************
-  146          函数功能：环岛检测
-  147          输入参数：无
-  148          **************************************************************************/
-  149          void Roundabout_detection(void)
-  150          {
-  151   1        float adc_err_Roundabout;
-  152   1        adc_err_Roundabout = ADC_error_processing(0.2,0.8,0);
-  153   1      //  if()//入环检测
-  154   1      //  Roundabout_flag = 1;
+  121   1        return adc_err;
+  122   1      }
+  123          
+  124          /**************************************************************************
+  125          函数功能：窗口滤波
+  126          输入参数：窗口数组
+  127          **************************************************************************/
+  128          float ADC_error_window_filtering(void)
+  129          {
+  130   1        adc_err_array[window_flag]=adc_err;
+  131   1        window_flag ++;
+  132   1        if(window_flag==5)
+  133   1          window_flag=0;
+  134   1        if(adc_err_array[0]!=0)
+  135   1          adc_err=(adc_err_array[1]+adc_err_array[2]+adc_err_array[3]+adc_err_array[4])/4;
+  136   1        return adc_err;
+  137   1      }
+  138          
+  139          /**************************************************************************
+  140          函数功能：ADC_err采集值加速度 //大概是没用的
+  141          输入参数：无
+  142          **************************************************************************/
+  143          float ADC_error_acceleration(void)
+  144          {
+  145   1        ADC_error_a=(adc_err_array[3]+adc_err_array[4]-adc_err_array[1]-adc_err_array[2])/4*100;
+  146   1        return ADC_error_a;
+  147   1      }
+  148          /**************************************************************************
+  149          函数功能：轨道状态检测
+  150          输入参数：无
+  151          **************************************************************************/
+  152          int16 Direct_judge(void)
+  153          {
+  154   1         static int16 res = 0;  // 小车当运行位置:0表示直道 
   155   1        
-  156   1      }
-  157          /**************************************************************************
-  158          函数功能：弯道检测
-  159          输入参数：无
-  160          **************************************************************************/
-  161          void Corners_detection(void)
-  162          {
-  163   1      
-  164   1      }
-  165          /**************************************************************************
-  166          函数功能：根据adc读值修正角度
-  167          输入参数：PID控制参数
-  168          **************************************************************************/
-  169          float Correct_Angle(float kp,float kd,float ki)
-  170          {
-  171   1        float target_angle;
-  172   1        float target_angle_last;
-  173   1        static float adc_err_last = 0;
-  174   1      
-  175   1      //  pd控制方案
-  176   1      //  target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
-  177   1      //  kp+=adc_err*adc_err*0.1;//加入动态变化
-  178   1        
-  179   1      //  pid控制方案
-  180   1        target_angle = kp*adc_err + +kd*(adc_err-adc_err_last)+(ki+=ki*adc_err);
-  181   1        target_angle=0.8*target_angle+0.2*target_angle_last;
-  182   1        target_angle_last=target_angle;
-  183   1        
-  184   1        adc_err_last = adc_err;
-  185   1        
-  186   1        return target_angle;
-C251 COMPILER V5.60.0,  control                                                            27/04/23  18:18:34  PAGE 4   
+  156   1        //  阈值判断方向 //
+  157   1        if(res == 0 && res != 2 && adc_err >= 0.29)
+  158   1        res = 1;        // 左转弯
+  159   1        
+  160   1        else if(res == 0 && res != 1 && adc_err <= -0.29)
+  161   1        res = 2;        // 右转弯
+  162   1        
+  163   1        else if(adc_err >= -0.29 && adc_err <= 0.29)
+  164   1        res = 0;        // 直道(暂时未考虑环岛的影响)
+  165   1      
+  166   1        // 过渡状态的判断 //
+  167   1        if(adc_err >= 0.6 && adc4 <= 500)
+  168   1        res = 8;        //左转弯过渡状态
+  169   1        
+  170   1        else if(adc_err <= -0.6 && adc1 <= 500)
+  171   1        res = 9;        //右转弯过渡状态
+  172   1        
+  173   1        return res;
+  174   1      }
+  175          
+  176          /**************************************************************************
+  177          函数功能：丢线判断
+  178          输入参数：无
+  179          **************************************************************************/
+  180          void lost_line_judge(void)
+  181          {
+  182   1        int8 i,L_count=0,R_count=0;// 左右计数
+  183   1        lostline_dir = 0;   
+  184   1        if(lostline_flag==0)//丢线标志为0时进入
+  185   1        {
+  186   2          if(adc1 < 500 && adc2 < 500 && adc3 < 500 && adc4 < 500) //进入丢线条件
+C251 COMPILER V5.60.0,  control                                                            01/05/23  21:47:00  PAGE 4   
 
-  187   1      }
-  188          
-  189          /**************************************************************************
-  190          函数功能：开启电机闭环
-  191          **************************************************************************/
-  192          void PID_on(void)
-  193          {
-  194   1        pid_flag = 1;
-  195   1      }
-  196          
-  197          /**************************************************************************
-  198          函数功能：关闭电机闭环
-  199          **************************************************************************/
-  200          void PID_off(void)
-  201          {
-  202   1        pid_flag = 0;
-  203   1      }
-*** WARNING C183 IN LINE 152 OF ..\CODE\control.c: dead assignment eliminated
-*** WARNING C184 IN LINE 181 OF ..\CODE\control.c: value of 'target_angle_last' possibly undefined
+  187   2            lostline_flag=1;//丢线标志置1
+  188   2      
+  189   2          for(i=0;i<5;i++)//奇数
+  190   2          {
+  191   3            if(adc_err_array[i]<0)
+  192   3             R_count++;
+  193   3            if(adc_err_array[i]>0)
+  194   3             L_count++;
+  195   3          }
+  196   2          if(L_count>R_count)
+  197   2            lostline_dir=1;//左丢线标志
+  198   2          if(L_count<R_count) 
+  199   2            lostline_dir=2;//右丢线标志
+  200   2      
+  201   2        }
+  202   1      }
+  203          /**************************************************************************
+  204          函数功能：丢线处理
+  205          输入参数：无
+  206          **************************************************************************/
+  207          void lostline_deal(void)
+  208          {
+  209   1      
+  210   1        if(lostline_flag==1)
+  211   1          {
+  212   2            if(lostline_dir==1)//左丢线
+  213   2              order_angle = -100;
+  214   2            
+  215   2            if(lostline_dir==2)//右丢线
+  216   2              order_angle = 100;
+  217   2      
+  218   2            if(adc3 >= 500 && adc4 >= 500)
+  219   2              lostline_flag=0;
+  220   2          }
+  221   1      }
+  222          
+  223          /**************************************************************************
+  224          函数功能：根据adc读值修正角度(舵机传统pid算法)
+  225          输入参数：PID控制参数
+  226          **************************************************************************/
+  227          float Correct_Angle(float kp,float kd,float ki)
+  228          {
+  229   1        float target_angle;
+  230   1        float target_angle_last;
+  231   1        static float adc_err_last = 0;
+  232   1        
+  233   1      //  pd控制方案
+  234   1      //  target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
+  235   1      //  kp+=adc_err*adc_err*0.1;//加入动态变化
+  236   1        
+  237   1      //  pid控制方案
+  238   1        target_angle = kp*adc_err + +kd*(adc_err-adc_err_last)+(ki+=ki*adc_err);
+  239   1        target_angle=0.8*target_angle+0.2*target_angle_last;
+  240   1        target_angle_last=target_angle;
+  241   1        
+  242   1        adc_err_last = adc_err;
+  243   1        
+  244   1        return target_angle;
+  245   1      }
+  246          
+  247          /**************************************************************************
+  248          函数功能：开启电机闭环
+  249          **************************************************************************/
+  250          void PID_on(void)
+  251          {
+  252   1        pid_flag = 1;
+C251 COMPILER V5.60.0,  control                                                            01/05/23  21:47:00  PAGE 5   
+
+  253   1      }
+  254          
+  255          /**************************************************************************
+  256          函数功能：关闭电机闭环
+  257          **************************************************************************/
+  258          void PID_off(void)
+  259          {
+  260   1        pid_flag = 0;
+  261   1      }
+*** WARNING C184 IN LINE 239 OF ..\CODE\control.c: value of 'target_angle_last' possibly undefined
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       677     ------
+  code size            =      1057     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =        97         20
+  edata size           =       105         20
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
@@ -242,8 +301,8 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        81     ------
+  hconst size          =        87     ------
 End of Module Information.
 
 
-C251 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

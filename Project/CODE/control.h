@@ -22,7 +22,8 @@ extern float adc_err;
 extern float adc_err_array[];
 extern int16 window_flag;
 extern int16 Roundabout_flag;
-extern float ADC_error_a; 
+extern float ADC_error_a;
+extern int16 Dir_judge_flag;
 
 /****º¯ÊýÉùÃ÷****/
 void Akeman_Control(float basic_speed,float target_angle);
@@ -32,6 +33,8 @@ float ADC_error_weight_filtering(void);
 float ADC_error_window_filtering(void);
 float ADC_error_acceleration(void);
 int16 Direct_judge(void);
+void lost_line_judge(void);
+void lostline_deal(void);
 float Correct_Angle(float kp,float kd,float ki);
 void PID_on(void);
 void PID_off(void);
