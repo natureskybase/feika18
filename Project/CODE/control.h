@@ -31,7 +31,7 @@ float ADC_error_processing(float A,float B,float compensation);
 float ADC_error_weight_filtering(void);
 float ADC_error_window_filtering(void);
 float ADC_error_acceleration(void);
-void Roundabout_detection(void);
+int16 Direct_judge(void);
 float Correct_Angle(float kp,float kd,float ki);
 void PID_on(void);
 void PID_off(void);

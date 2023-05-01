@@ -92,7 +92,7 @@ void Motor_PID_Control(float current_l,float target_l,float current_r,float targ
 	Motor_Control((int32)pwm_l,(int32)pwm_r);
 }
 /**************************************************************************
-函数功能：电感差比和运算
+函数功能：电感差比和归一化运算
 输入参数：A,B为差比和权重
 **************************************************************************/
 float ADC_error_processing(float A,float B,float compensation)
@@ -119,7 +119,7 @@ float ADC_error_weight_filtering(void)
 }
 
 /**************************************************************************
-函数功能：窗口滤波//有待求证
+函数功能：窗口滤波
 输入参数：窗口数组
 **************************************************************************/
 float ADC_error_window_filtering(void)
@@ -134,7 +134,7 @@ float ADC_error_window_filtering(void)
 }
 
 /**************************************************************************
-函数功能：ADC_err采集值加速度
+函数功能：ADC_err采集值加速度 //大概是没用的
 输入参数：无
 **************************************************************************/
 float ADC_error_acceleration(void)
@@ -143,27 +143,81 @@ float ADC_error_acceleration(void)
 	return ADC_error_a;
 }
 /**************************************************************************
-函数功能：环岛检测
+函数功能：轨道状态检测
 输入参数：无
 **************************************************************************/
-void Roundabout_detection(void)
+int16 Direct_judge(void)
 {
-	float adc_err_Roundabout;
-	adc_err_Roundabout = ADC_error_processing(0.2,0.8,0);
-//	if()//入环检测
-//	Roundabout_flag = 1;
+	static int16 res = 0;  // 小车当运行位置:0表示直道 
 	
+	//  阈值判断方向 //
+	if((res == 0 && adc_err)&&(res != 2 && adc_err))
+	res = 1;        // 左转弯
+	
+	else if((res == 0 && adc_err)&&(res != 1 && adc_err))
+	res = 2;        // 右转弯
+	
+	else if()  
+	res = 0;				// 直道
+
+	// 过渡状态的判断 //
+	if(res == 2 && adc_err >= 0 && adc1 != 100)
+	res = 8;
+	
+	else if(res == 1 && adc_err <= 0 && adc4!= 100)
+	res = 9;
+	
+	return res;
+}
+
+/**************************************************************************
+函数功能：丢线判断
+输入参数：无
+**************************************************************************/
+void lost_line_judge(void)
+{
+	int8 i,L_count=0,R_count=0;// 左右计数 
+	if(lostline_flag==0)//丢线标志为0时进入
+	{
+		if(adc1 < 500 && adc2 < 500 && adc3 < 500 && adc4 < 500) //进入丢线条件
+			lostline_flag=1;//丢线标志置1
+
+		for(i=0;i<5;i++)//奇数
+		{
+			if(adc_err_array[i]<0)
+			 R_count++;
+			if(adc_err_array[i]>=0)
+			 L_count++;
+		}
+		if(L_count>R_count)
+			lostline_dir=1;//左丢线标志
+		if(L_count<R_count) 
+			lostline_dir=2;//右丢线标志
+
+	}
 }
 /**************************************************************************
-函数功能：弯道检测
+函数功能：丢线处理
 输入参数：无
 **************************************************************************/
-void Corners_detection(void)
+void lostline_deal(void)
 {
 
+	if(lostline_flag==1)
+		{
+			if(lostline_dir==1)//左丢线
+				order_angle=-100;
+			
+			if(lostline_dir==2)//右丢线
+				order_angle= 100;
+
+			if(adc3 >= 500 && adc4 >= 500)
+				lostline_flag=0;
+		}
 }
+
 /**************************************************************************
-函数功能：根据adc读值修正角度
+函数功能：根据adc读值修正角度(舵机传统pid算法)
 输入参数：PID控制参数
 **************************************************************************/
 float Correct_Angle(float kp,float kd,float ki)
