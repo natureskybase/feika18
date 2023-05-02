@@ -162,7 +162,7 @@ int16 Direct_judge(void)
 	
 	else if(adc_err >= -0.29 && adc_err <= 0.29)
 	res = 0;				// 直道(暂时未考虑环岛的影响)
-
+	
 	// 过渡状态的判断 //
 	if(adc_err >= 0.6 && adc4 <= 500)
 	res = 8;        //左转弯过渡状态
@@ -183,7 +183,7 @@ void lost_line_judge(void)
 	lostline_dir = 0; 	
 	if(lostline_flag==0)//丢线标志为0时进入
 	{
-		if(adc1 < 500 && adc2 < 500 && adc3 < 500 && adc4 < 500) //进入丢线条件
+		if(adc1 < 2000 && adc2 < 2000 && adc3 < 2000 && adc4 < 2000) //进入丢线条件
 			lostline_flag=1;//丢线标志置1
 
 		for(i=0;i<5;i++)//奇数
@@ -215,7 +215,7 @@ void lostline_deal(void)
 			if(lostline_dir==2)//右丢线
 				order_angle = 100;
 
-			if(adc3 >= 500 && adc4 >= 500)
+			if(adc1 > 2000 && adc2 > 2000 && adc3 > 2000 && adc4 > 2000)
 				lostline_flag=0;
 		}
 }

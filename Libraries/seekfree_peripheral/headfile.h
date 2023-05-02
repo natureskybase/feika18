@@ -58,5 +58,6 @@
 #include "brushless.h"  //ÎÞË¢Çý¶¯
 #include "oled.h"
 #include "pid.h"
+#include "host.h"
 
 #endif

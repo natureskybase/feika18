@@ -153,7 +153,7 @@ void TM4_Isr() interrupt 20    //函数
 {
 	TIM4_CLEAR_FLAG; //清除中断标志
 ///*****************************************/	
-	if(adc1 <500 && adc1 <500 && adc2 <500 && adc3 <500 && adc4 <500)
+	if(adc1 <1000 && adc2 <1000 && adc3 <1000 && adc4 <1000)
 		order_speed = 0;
 
 	Motor_Control(order_speed,order_speed);
@@ -165,26 +165,41 @@ void TM4_Isr() interrupt 20    //函数
 	
 	Dir_judge_flag = Direct_judge();
 	
-	if(Dir_judge_flag == 0)
+	switch (Dir_judge_flag)
 	{
-		order_angle = Correct_Angle(127,50,0.3);//165,500,0.5
-		order_speed = 2600;
-	}
-	if(Dir_judge_flag == 1 || Dir_judge_flag == 2)
-	{
-		order_angle = Correct_Angle(150,100,0);
-		order_speed = 2300;
-	}
-	if(Dir_judge_flag == 8 || Dir_judge_flag == 9)
-	{
-		order_angle = Correct_Angle(165,100,0);
-		order_speed = 2600;
+		case(0)://直道
+			order_angle = Correct_Angle(127,50,0.3);//165,500,0.5
+			order_speed = 2500;
+			angle_limit = 100;
+		break;
+		
+		case(1)://左弯道
+			order_angle = Correct_Angle(145,0,0.5);
+			order_speed = 2450;
+		break;
+		
+		case(2)://右弯道
+			order_angle = Correct_Angle(145,0,0.5);
+			order_speed = 2450;
+		break;
+		
+		case(8):
+			order_angle = Correct_Angle(160,0,0.3);
+			order_speed = 2550;
+			angle_limit = 90;
+		break;
+		
+		case(9):
+			order_angle = Correct_Angle(160,0,0.3);
+			order_speed = 2550;
+			angle_limit = 90;
+		break;
 	}
 	
 	lost_line_judge();//丢线检测
 	lostline_deal();  //丢线处理
 	
-	Steer_Spin(order_angle);
+	Steer_Spin_limit(order_angle,angle_limit);
 	
 	
 	

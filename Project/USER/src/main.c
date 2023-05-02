@@ -40,7 +40,7 @@ void main()
 	Steer_Init(); //舵机初始化
 	Brushless_Init(); //无刷初始化
 	OLED_Init();    //OLED初始化
-	Timer4_Init(10);
+	Timer4_Init(5);
 	LED=0;	//默认关闭LED
 	BUZZER=0;	//默认关闭buzzer
 	
@@ -50,16 +50,14 @@ void main()
 	{
 		
 		
-		printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc1,adc2,adc3,adc4,adc_err);
+//		printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc1,adc2,adc3,adc4,adc_err);
 //		printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc_err_array[3],adc_err_array[4],adc_err);
 //		printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
 //		printf("Dir_judge_flag = %d \r\n",Dir_judge_flag);
 //		printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
 
-		
-		
-//		Akeman_Control(order_speed,order_angle);
-		delay_ms(100);
+		send_four_data(adc1,adc2,adc3,adc4);
+		delay_ms(5);
   }
 }
 

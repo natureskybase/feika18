@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  steer                                                              01/05/23  19:19:55  PAGE 1   
+C251 COMPILER V5.60.0,  steer                                                              02/05/23  09:20:21  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE steer
@@ -11,64 +11,80 @@ stmt  level    source
 
     1          #include "steer.h"
     2          
-    3          /**************************************************************************
-    4          函数功能：舵机pwm初始化
-    5          频    率：50Hz
-    6          初始中值：MIDDLE_ANGLE
-    7          **************************************************************************/
-    8          void Steer_Init(void)
-    9          {
-   10   1        pwm_init(STEER_PIN, 50, MIDDLE_ANGLE);
-   11   1      }
-   12          
-   13          /**************************************************************************
-   14          函数功能：舵机旋转
-   15          输入参数：舵机相对中值旋转的角度（顺时针为正）
-   16          单    位：°
-   17          **************************************************************************/
-   18          void Steer_Spin(float target_angle)
-   19          {
-   20   1        uint32 duty;
-   21   1        
-   22   1        /****限幅****/
-   23   1        if(target_angle > 100) target_angle =  100;
-   24   1        if(target_angle <-100) target_angle = -100;
-   25   1        if(target_angle>=-100&&target_angle<=100)
-   26   1        {
-   27   2        if(target_angle>=0)
-   28   2        {
-   29   3          duty = MIDDLE_ANGLE +0.006*target_angle*target_angle;
-   30   3      //  duty = MIDDLE_ANGLE + target_angle*0.4;
-   31   3        }
-   32   2        
-   33   2        if(target_angle<0)
-   34   2        {
-   35   3          duty = MIDDLE_ANGLE +(-0.007)*target_angle*target_angle;
-   36   3      //  duty = MIDDLE_ANGLE + target_angle*0.3;
-   37   3        }
-   38   2        }
-   39   1        pwm_duty(STEER_PIN,duty);
-   40   1      }
-   41          
+    3          float angle_limit;
+    4          /**************************************************************************
+    5          函数功能：舵机pwm初始化
+    6          频    率：50Hz
+    7          初始中值：MIDDLE_ANGLE
+    8          **************************************************************************/
+    9          void Steer_Init(void)
+   10          {
+   11   1        pwm_init(STEER_PIN, 50, MIDDLE_ANGLE);
+   12   1      }
+   13          
+   14          /**************************************************************************
+   15          函数功能：舵机旋转
+   16          输入参数：舵机相对中值旋转的角度（负数为左转,正数为右转）
+   17          单    位：°
+   18          **************************************************************************/
+   19          void Steer_Spin(float target_angle)
+   20          {
+   21   1        uint32 duty;
+   22   1        
+   23   1        /****限幅****/
+   24   1        if(target_angle > 100) target_angle =  100;
+   25   1        if(target_angle <-100) target_angle = -100;
+   26   1        if(target_angle>=-100&&target_angle<=100)
+   27   1        {
+   28   2        if(target_angle>=0)
+   29   2        {
+   30   3          duty = MIDDLE_ANGLE +0.006*target_angle*target_angle;
+   31   3      //  duty = MIDDLE_ANGLE + target_angle*0.4;
+   32   3        }
+   33   2        
+   34   2        if(target_angle<0)
+   35   2        {
+   36   3          duty = MIDDLE_ANGLE +(-0.007)*target_angle*target_angle;
+   37   3      //  duty = MIDDLE_ANGLE + target_angle*0.3;
+   38   3        }
+   39   2        }
+   40   1        pwm_duty(STEER_PIN,duty);
+   41   1      }
    42          
-   43          
-*** WARNING C184 IN LINE 39 OF ..\CODE\steer.c: value of 'duty' possibly undefined
+   43          /**************************************************************************
+   44          函数功能：舵机限幅
+   45          输入参数：舵机相对中值旋转的角度（负数为左转,正数为右转）
+   46          单    位：°
+   47          **************************************************************************/
+   48          void Steer_Spin_limit(float target_angle,float angle_limit)
+   49          {
+   50   1        if(target_angle > angle_limit)
+   51   1          target_angle = angle_limit;
+   52   1        if(target_angle < -angle_limit)
+   53   1          target_angle = -angle_limit;
+   54   1        
+   55   1        Steer_Spin(target_angle);
+   56   1        
+   57   1      }
+C251 COMPILER V5.60.0,  steer                                                              02/05/23  09:20:21  PAGE 2   
+
+   58          
+   59          
+*** WARNING C184 IN LINE 40 OF ..\CODE\steer.c: value of 'duty' possibly undefined
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       173     ------
+  code size            =       205     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =    ------     ------
+  edata size           =         4     ------
   bit size             =    ------     ------
   ebit size            =    ------     ------
-C251 COMPILER V5.60.0,  steer                                                              01/05/23  19:19:55  PAGE 2   
-
   bitaddressable size  =    ------     ------
   ebitaddressable size =    ------     ------
   far data size        =    ------     ------
