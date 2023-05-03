@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  host                                                               02/05/23  16:48:02  PAGE 1   
+C251 COMPILER V5.60.0,  host                                                               03/05/23  20:46:59  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE host
@@ -48,25 +48,25 @@ stmt  level    source
    37   1        uint8 i;
    38   1        uint8 sumcheck = 0;     //和校验
    39   1        uint8 addcheck = 0;     //附加校验
-   40   1        uint8 data_buf[100];    //数据缓冲区
+   40   1        uint8 data_buf[20];   //数据缓冲区
    41   1        
    42   1        //帧头//
    43   1        data_buf[0] = 0xAA;
    44   1        data_buf[1] = 0xFF;
    45   1        data_buf[2] = 0xF1;
-   46   1        data_buf[3] = 8;//2+2+2+2
+   46   1        data_buf[3] = 0x08;//2+2+2+2
    47   1        
    48   1        //数据//
-   49   1        data_buf[4] = num1 >> 8;
-   50   1        data_buf[6] = num2 >> 8;
-   51   1        data_buf[8] = num3 >> 8;
-   52   1        data_buf[10] = num4 >> 8;
+   49   1        data_buf[4] = num1& 0xFF;
+   50   1        data_buf[6] = num2 & 0xFF;
+   51   1        data_buf[8] = num3 & 0xFF;
+   52   1        data_buf[10] = num4 & 0xFF;
    53   1        
-   54   1        data_buf[5] = num1 & 0xFF;
-   55   1        data_buf[7] = num2 & 0xFF;
-   56   1        data_buf[9] = num3 & 0xFF;
-   57   1        data_buf[11] = num4 & 0xFF;
-C251 COMPILER V5.60.0,  host                                                               02/05/23  16:48:02  PAGE 2   
+   54   1        data_buf[5] = num1  >> 8;
+   55   1        data_buf[7] = num2 >> 8;
+   56   1        data_buf[9] = num3 >> 8;
+   57   1        data_buf[11] = num4 >> 8;
+C251 COMPILER V5.60.0,  host                                                               03/05/23  20:46:59  PAGE 2   
 
    58   1        
    59   1        //校验位//
@@ -79,7 +79,7 @@ stmt  level    source
    66   1        data_buf[13] = addcheck;
    67   1        
    68   1        //数据发送至上位机//
-   69   1        for (i = 0;i < 13; i++)
+   69   1        for (i = 0;i < 14; i++)
    70   1        uart_putchar(UART_1, data_buf[i]);
    71   1        
    72   1      }
@@ -98,7 +98,7 @@ Module Information          Static   Overlayable
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =    ------        100
+  edata size           =    ------         20
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------

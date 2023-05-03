@@ -57,7 +57,7 @@ void main()
 //		printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
 
 		send_four_data(adc1,adc2,adc3,adc4);
-		delay_ms(5);
+		delay_ms(10);
   }
 }
 

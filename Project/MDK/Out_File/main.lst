@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               02/05/23  16:48:12  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               03/05/23  20:36:53  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -66,7 +66,7 @@ stmt  level    source
    53   2      //    printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,a
              -dc1,adc2,adc3,adc4,adc_err);
    54   2      //    printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc
-C251 COMPILER V5.60.0,  main                                                               02/05/23  16:48:12  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               03/05/23  20:36:53  PAGE 2   
 
              -_err_array[3],adc_err_array[4],adc_err);
    55   2      //    printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
@@ -74,7 +74,7 @@ stmt  level    source
    57   2      //    printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
    58   2      
    59   2          send_four_data(adc1,adc2,adc3,adc4);
-   60   2          delay_ms(5);
+   60   2          delay_ms(10);
    61   2        }
    62   1      }
    63          
