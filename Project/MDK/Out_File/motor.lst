@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  motor                                                              01/05/23  19:19:55  PAGE 1   
+C251 COMPILER V5.60.0,  motor                                                              04/05/23  22:14:09  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE motor
@@ -66,7 +66,7 @@ stmt  level    source
    55   1        else
    56   1        {
    57   2          pwm_duty(PWM_R1,-right_duty);
-C251 COMPILER V5.60.0,  motor                                                              01/05/23  19:19:55  PAGE 2   
+C251 COMPILER V5.60.0,  motor                                                              04/05/23  22:14:09  PAGE 2   
 
    58   2          pwm_duty(PWM_R2,0); 
    59   2        }

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  isr                                                                03/05/23  23:27:41  PAGE 1   
+C251 COMPILER V5.60.0,  isr                                                                04/05/23  22:14:08  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE isr
@@ -66,7 +66,7 @@ stmt  level    source
    53   2              UART2_CLEAR_TX_FLAG;
    54   2          busy[2] = 0;
    55   2        }
-C251 COMPILER V5.60.0,  isr                                                                03/05/23  23:27:41  PAGE 2   
+C251 COMPILER V5.60.0,  isr                                                                04/05/23  22:14:08  PAGE 2   
 
    56   1          if(UART2_GET_RX_FLAG)
    57   1        {
@@ -134,7 +134,7 @@ stmt  level    source
   118   1      }
   119          void INT2_Isr() interrupt 10
   120          {
-C251 COMPILER V5.60.0,  isr                                                                03/05/23  23:27:41  PAGE 3   
+C251 COMPILER V5.60.0,  isr                                                                04/05/23  22:14:08  PAGE 3   
 
   121   1        INT2_CLEAR_FLAG;  //清除中断标志
   122   1      }
@@ -202,7 +202,7 @@ stmt  level    source
   184   2          break;
   185   2          
   186   2          case(8):
-C251 COMPILER V5.60.0,  isr                                                                03/05/23  23:27:41  PAGE 4   
+C251 COMPILER V5.60.0,  isr                                                                04/05/23  22:14:08  PAGE 4   
 
   187   2            order_angle = Correct_Angle(160,0,0);
   188   2            order_speed = 2550;

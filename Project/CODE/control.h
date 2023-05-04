@@ -36,6 +36,9 @@ int16 Direct_judge(void);
 void lost_line_judge(void);
 void lostline_deal(void);
 float Correct_Angle(float kp,float kd,float ki);
+float Dev_Err_Window_Filter_2(void);
+float ADC_Err_Trendency(void);
+int16 Direct_judge_Accele(void);
 void PID_on(void);
 void PID_off(void);
 

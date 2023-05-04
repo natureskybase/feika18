@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  pid                                                                01/05/23  19:19:56  PAGE 1   
+C251 COMPILER V5.60.0,  pid                                                                04/05/23  22:14:09  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE pid
@@ -66,7 +66,7 @@ stmt  level    source
    55   1        pid->pout = 0;
    56   1        pid->iout = 0;
    57   1        pid->dout = 0;
-C251 COMPILER V5.60.0,  pid                                                                01/05/23  19:19:56  PAGE 2   
+C251 COMPILER V5.60.0,  pid                                                                04/05/23  22:14:09  PAGE 2   
 
    58   1        pid->out = 0;
    59   1      }
@@ -134,7 +134,7 @@ stmt  level    source
   121   1      
   122   1        pid->f_param_init(pid, mode, maxout, intergral_limit, kp, ki, kd);
 *** WARNING C52 IN LINE 122 OF ..\CODE\pid.c: use of undefined type 'pid_t_'
-C251 COMPILER V5.60.0,  pid                                                                01/05/23  19:19:56  PAGE 3   
+C251 COMPILER V5.60.0,  pid                                                                04/05/23  22:14:09  PAGE 3   
 
 *** WARNING C98 IN LINE 122 OF ..\CODE\pid.c: parameter 1: pointer to different objects
   123   1        pid->f_pid_reset(pid, kp, ki, kd);
