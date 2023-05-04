@@ -842,5 +842,4 @@ Dir_judge_flag = 0  ADC_1=1506  ADC_2=2944  ADC_3=2945  ADC_4=1961  adc_err=-0.1
 Dir_judge_flag = 0  ADC_1=1521  ADC_2=2920  ADC_3=2944  ADC_4=1948  adc_err=-0.127326
 Dir_judge_flag = 0  ADC_1=1512  ADC_2=2931  ADC_3=2929  ADC_4=1961  adc_err=-0.128239
 Dir_judge_flag = 0  ADC_1=1524  ADC_2=2917  ADC_3=2934  ADC_4=1944  adc_err=-0.126699
-Dir_judge_flag = 0  ADC_1=1529  ADC_2=2918  ADC_3=2950  ADC_4=1948  adc_err=-0.126327
-Dir_judge_flag = 0  ADC_1=1523  ADC_2=2927  ADC_3=2951  ADC_4=1953  adc_err=-0.128776
+
