@@ -168,23 +168,23 @@ void TM4_Isr() interrupt 20    //函数
 	switch (Dir_judge_flag)
 	{
 		case(0)://直道
-			order_angle = Correct_Angle(127,50,0.3);//165,500,0.5
+			order_angle = Correct_Angle(90,0,0);
 			order_speed = 2500;
 			angle_limit = 100;
 		break;
 		
 		case(1)://左弯道
-			order_angle = Correct_Angle(145,0,0.5);
+			order_angle = Correct_Angle(145,0,0);
 			order_speed = 2450;
 		break;
 		
 		case(2)://右弯道
-			order_angle = Correct_Angle(145,0,0.5);
+			order_angle = Correct_Angle(145,0,0);
 			order_speed = 2450;
 		break;
 		
 		case(8):
-			order_angle = Correct_Angle(160,0,0.3);
+			order_angle = Correct_Angle(160,0,0);
 			order_speed = 2550;
 			angle_limit = 90;
 		break;

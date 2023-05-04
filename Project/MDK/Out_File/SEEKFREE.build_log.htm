@@ -26,12 +26,15 @@ Project File Date:  05/01/2023
 
 <h2>Output:</h2>
 Build target 'STC32G12K128'
-compiling host.c...
+compiling isr.c...
+..\USER\src\isr.c(110): warning C317: attempt to redefine macro 'LED'
+compiling main.c...
+..\USER\src\main.c(32): warning C47: 'adc_err_read': unreferenced local variable
 linking...
-Program Size: data=8.0 edata+hdata=2377 xdata=0 const=3628 code=24067
+Program Size: data=8.0 edata+hdata=2381 xdata=0 const=3710 code=23946
 creating hex file from ".\Out_File\SEEKFREE"...
-".\Out_File\SEEKFREE" - 0 Error(s), 0 Warning(s).
-Build Time Elapsed:  00:00:00
+".\Out_File\SEEKFREE" - 0 Error(s), 2 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

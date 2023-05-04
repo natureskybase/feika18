@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  control                                                            03/05/23  20:13:18  PAGE 1   
+C251 COMPILER V5.60.0,  control                                                            03/05/23  23:07:16  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE control
@@ -66,7 +66,7 @@ stmt  level    source
    54          /**************************************************************************
    55          函数功能：电机PID闭环控制
    56          输入参数：左右轮的实际与目标转速
-C251 COMPILER V5.60.0,  control                                                            03/05/23  20:13:18  PAGE 2   
+C251 COMPILER V5.60.0,  control                                                            03/05/23  23:07:16  PAGE 2   
 
    57          **************************************************************************/
    58          void Motor_PID_Control(float current_l,float target_l,float current_r,float target_r)
@@ -134,7 +134,7 @@ stmt  level    source
   118   1        adc_err = (0.8)*adc_err+(0.2)*adc_err_last;
   119   1        adc_err_last = adc_err;
   120   1        
-C251 COMPILER V5.60.0,  control                                                            03/05/23  20:13:18  PAGE 3   
+C251 COMPILER V5.60.0,  control                                                            03/05/23  23:07:16  PAGE 3   
 
   121   1        return adc_err;
   122   1      }
@@ -202,7 +202,7 @@ stmt  level    source
   184   1        if(lostline_flag==0)//丢线标志为0时进入
   185   1        {
   186   2          if(adc1 < 2000 && adc2 < 2000 && adc3 < 2000 && adc4 < 2000) //进入丢线条件
-C251 COMPILER V5.60.0,  control                                                            03/05/23  20:13:18  PAGE 4   
+C251 COMPILER V5.60.0,  control                                                            03/05/23  23:07:16  PAGE 4   
 
   187   2            lostline_flag=1;//丢线标志置1
   188   2      
@@ -249,39 +249,40 @@ stmt  level    source
   229   1        float target_angle;
   230   1        float target_angle_last;
   231   1        static float adc_err_last = 0;
-  232   1        
-  233   1      //  pd控制方案
-  234   1      //  target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
-  235   1      //  kp+=adc_err*adc_err*0.1;//加入动态变化
-  236   1        
-  237   1      //  pid控制方案
-  238   1        target_angle = kp*adc_err + +kd*(adc_err-adc_err_last)+(ki+=ki*adc_err);
-  239   1        target_angle=0.8*target_angle+0.2*target_angle_last;
-  240   1        target_angle_last=target_angle;
-  241   1        
-  242   1        adc_err_last = adc_err;
-  243   1        
-  244   1        return target_angle;
-  245   1      }
-  246          
-  247          /**************************************************************************
-  248          函数功能：开启电机闭环
-  249          **************************************************************************/
-  250          void PID_on(void)
-  251          {
-  252   1        pid_flag = 1;
-C251 COMPILER V5.60.0,  control                                                            03/05/23  20:13:18  PAGE 5   
+  232   1        static float integral_err =0;
+  233   1        
+  234   1      //  pd控制方案
+  235   1      //  target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
+  236   1      //  kp+=adc_err*adc_err*0.1;//加入动态变化
+  237   1        
+  238   1      //  pid控制方案
+  239   1        target_angle = kp*adc_err + +kd*(adc_err-adc_err_last)+(integral_err+=ki*adc_err);
+  240   1        target_angle=0.8*target_angle+0.2*target_angle_last;
+  241   1        target_angle_last=target_angle;
+  242   1        
+  243   1        adc_err_last = adc_err;
+  244   1        
+  245   1        return target_angle;
+  246   1      }
+  247          
+  248          /**************************************************************************
+  249          函数功能：开启电机闭环
+  250          **************************************************************************/
+  251          void PID_on(void)
+  252          {
+C251 COMPILER V5.60.0,  control                                                            03/05/23  23:07:16  PAGE 5   
 
-  253   1      }
-  254          
-  255          /**************************************************************************
-  256          函数功能：关闭电机闭环
-  257          **************************************************************************/
-  258          void PID_off(void)
-  259          {
-  260   1        pid_flag = 0;
-  261   1      }
-*** WARNING C184 IN LINE 239 OF ..\CODE\control.c: value of 'target_angle_last' possibly undefined
+  253   1        pid_flag = 1;
+  254   1      }
+  255          
+  256          /**************************************************************************
+  257          函数功能：关闭电机闭环
+  258          **************************************************************************/
+  259          void PID_off(void)
+  260          {
+  261   1        pid_flag = 0;
+  262   1      }
+*** WARNING C184 IN LINE 240 OF ..\CODE\control.c: value of 'target_angle_last' possibly undefined
 
 
 Module Information          Static   Overlayable
@@ -293,7 +294,7 @@ Module Information          Static   Overlayable
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =       105         20
+  edata size           =       109         20
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
@@ -301,7 +302,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        87     ------
+  hconst size          =        95     ------
 End of Module Information.
 
 

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               03/05/23  20:36:53  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               03/05/23  23:27:41  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -42,47 +42,50 @@ stmt  level    source
    29          
    30          void main()
    31          {
-   32   1        board_init();
-   33   1      
-   34   1        // 初始化寄存器,勿删除此句代码。  
-   35   1        // 此处编写用户代码(例如：外设初始化代码等)
-   36   1        PID_struct_init(&pid_left_,POSITION_PID,10000,5000,30,0.5,22); //pid_left_PID初始化
-   37   1        PID_struct_init(&pid_right_,POSITION_PID,10000,5000,28,0.4,11); //pid_right_PID初始化
-   38   1        My_Adc_Init(); //adc初始化
-   39   1        Motor_Init(); //电机初始化
-   40   1        Steer_Init(); //舵机初始化
-   41   1        Brushless_Init(); //无刷初始化
-   42   1        OLED_Init();    //OLED初始化
-   43   1        Timer4_Init(5);
-   44   1        LED=0;  //默认关闭LED
-   45   1        BUZZER=0; //默认关闭buzzer
-   46   1        
-   47   1      //  pwm_init(PWMB_CH4_P23,10000,0);
-   48   1      //  uart_init(UART_2,UART2_RX_P10,UART2_TX_P11,38400, TIM_2);
-   49   1          while(1)
-   50   1        {
-   51   2          
+   32   1        int16 adc_err_read;
+   33   1        board_init();
+   34   1      
+   35   1        // 初始化寄存器,勿删除此句代码。  
+   36   1        // 此处编写用户代码(例如：外设初始化代码等)
+   37   1        PID_struct_init(&pid_left_,POSITION_PID,10000,5000,30,0.5,22); //pid_left_PID初始化
+   38   1        PID_struct_init(&pid_right_,POSITION_PID,10000,5000,28,0.4,11); //pid_right_PID初始化
+   39   1        My_Adc_Init(); //adc初始化
+   40   1        Motor_Init(); //电机初始化
+   41   1        Steer_Init(); //舵机初始化
+   42   1        Brushless_Init(); //无刷初始化
+   43   1        OLED_Init();    //OLED初始化
+   44   1        Timer4_Init(5);
+   45   1        LED=0;  //默认关闭LED
+   46   1        BUZZER=0; //默认关闭buzzer
+   47   1        
+   48   1      //  pwm_init(PWMB_CH4_P23,10000,0);
+   49   1      //  uart_init(UART_2,UART2_RX_P10,UART2_TX_P11,38400, TIM_2);
+   50   1          while(1)
+   51   1        {
    52   2          
-   53   2      //    printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,a
-             -dc1,adc2,adc3,adc4,adc_err);
-   54   2      //    printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc
-C251 COMPILER V5.60.0,  main                                                               03/05/23  20:36:53  PAGE 2   
+   53   2          
+   54   2          printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc
+             -1,adc2,adc3,adc4,adc_err);
+C251 COMPILER V5.60.0,  main                                                               03/05/23  23:27:41  PAGE 2   
 
+   55   2      //    printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc
              -_err_array[3],adc_err_array[4],adc_err);
-   55   2      //    printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
-   56   2      //    printf("Dir_judge_flag = %d \r\n",Dir_judge_flag);
-   57   2      //    printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
-   58   2      
-   59   2          send_four_data(adc1,adc2,adc3,adc4);
-   60   2          delay_ms(10);
-   61   2        }
-   62   1      }
-   63          
+   56   2      //    printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
+   57   2      //    printf("Dir_judge_flag = %d \r\n",Dir_judge_flag);
+   58   2      //    printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
+   59   2          
+   60   2      //    adc_err_read =(int16)(adc_err*100);
+   61   2      //    send_four_data(adc1,adc2,adc3,adc4,adc_err_read);
+   62   2          delay_ms(10);
+   63   2        }
+   64   1      }
+*** WARNING C47 IN LINE 32 OF ..\USER\src\main.c: 'adc_err_read': unreferenced local variable
+   65          
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       169     ------
+  code size            =       209     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -97,8 +100,8 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =    ------     ------
+  hconst size          =        74     ------
 End of Module Information.
 
 
-C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C251 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

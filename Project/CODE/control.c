@@ -229,13 +229,14 @@ float Correct_Angle(float kp,float kd,float ki)
 	float target_angle;
 	float target_angle_last;
 	static float adc_err_last = 0;
+	static float integral_err =0;
 	
 //	pd控制方案
 // 	target_angle = kp*adc_err + kd*(adc_err-adc_err_last);
 //	kp+=adc_err*adc_err*0.1;//加入动态变化
 	
 //	pid控制方案
-	target_angle = kp*adc_err + +kd*(adc_err-adc_err_last)+(ki+=ki*adc_err);
+	target_angle = kp*adc_err + +kd*(adc_err-adc_err_last)+(integral_err+=ki*adc_err);
 	target_angle=0.8*target_angle+0.2*target_angle_last;
 	target_angle_last=target_angle;
 	

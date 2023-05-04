@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  isr                                                                03/05/23  20:13:18  PAGE 1   
+C251 COMPILER V5.60.0,  isr                                                                03/05/23  23:27:41  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE isr
@@ -66,7 +66,7 @@ stmt  level    source
    53   2              UART2_CLEAR_TX_FLAG;
    54   2          busy[2] = 0;
    55   2        }
-C251 COMPILER V5.60.0,  isr                                                                03/05/23  20:13:18  PAGE 2   
+C251 COMPILER V5.60.0,  isr                                                                03/05/23  23:27:41  PAGE 2   
 
    56   1          if(UART2_GET_RX_FLAG)
    57   1        {
@@ -134,7 +134,7 @@ stmt  level    source
   118   1      }
   119          void INT2_Isr() interrupt 10
   120          {
-C251 COMPILER V5.60.0,  isr                                                                03/05/23  20:13:18  PAGE 3   
+C251 COMPILER V5.60.0,  isr                                                                03/05/23  23:27:41  PAGE 3   
 
   121   1        INT2_CLEAR_FLAG;  //清除中断标志
   122   1      }
@@ -186,25 +186,25 @@ stmt  level    source
   168   1        switch (Dir_judge_flag)
   169   1        {
   170   2          case(0)://直道
-  171   2            order_angle = Correct_Angle(127,50,0.3);//165,500,0.5
+  171   2            order_angle = Correct_Angle(90,0,0);
   172   2            order_speed = 2500;
   173   2            angle_limit = 100;
   174   2          break;
   175   2          
   176   2          case(1)://左弯道
-  177   2            order_angle = Correct_Angle(145,0,0.5);
+  177   2            order_angle = Correct_Angle(145,0,0);
   178   2            order_speed = 2450;
   179   2          break;
   180   2          
   181   2          case(2)://右弯道
-  182   2            order_angle = Correct_Angle(145,0,0.5);
+  182   2            order_angle = Correct_Angle(145,0,0);
   183   2            order_speed = 2450;
   184   2          break;
   185   2          
   186   2          case(8):
-C251 COMPILER V5.60.0,  isr                                                                03/05/23  20:13:18  PAGE 4   
+C251 COMPILER V5.60.0,  isr                                                                03/05/23  23:27:41  PAGE 4   
 
-  187   2            order_angle = Correct_Angle(160,0,0.3);
+  187   2            order_angle = Correct_Angle(160,0,0);
   188   2            order_speed = 2550;
   189   2            angle_limit = 90;
   190   2          break;
@@ -252,7 +252,7 @@ stmt  level    source
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       689     ------
+  code size            =       661     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

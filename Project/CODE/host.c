@@ -32,7 +32,7 @@
 //}
 
 
-void send_four_data(int16 num1, int16 num2 ,int16 num3 ,int16 num4) //发送四个16位数据
+void send_five_data(uint8 frame, int16 num1, int16 num2 ,int16 num3 ,int16 num4 ,int16 num5) //发送五个16位数据
 {
 	uint8 i;
 	uint8 sumcheck = 0;			//和校验
@@ -42,19 +42,21 @@ void send_four_data(int16 num1, int16 num2 ,int16 num3 ,int16 num4) //发送四个16
 	//帧头//
 	data_buf[0] = 0xAA;
 	data_buf[1] = 0xFF;
-	data_buf[2] = 0xF1;
-	data_buf[3] = 0x08;//2+2+2+2
+	data_buf[2] = frame;
+	data_buf[3] = 0x0A;//2+2+2+2+2
 	
 	//数据//
 	data_buf[4] = num1& 0xFF;
 	data_buf[6] = num2 & 0xFF;
 	data_buf[8] = num3 & 0xFF;
 	data_buf[10] = num4 & 0xFF;
+	data_buf[12] = num5 & 0xFF;
 	
 	data_buf[5] = num1  >> 8;
 	data_buf[7] = num2 >> 8;
 	data_buf[9] = num3 >> 8;
 	data_buf[11] = num4 >> 8;
+	data_buf[13] = num5 >> 8;
 	
 	//校验位//
 	for( i=0; i < (data_buf[3]+4); i++)
@@ -62,11 +64,11 @@ void send_four_data(int16 num1, int16 num2 ,int16 num3 ,int16 num4) //发送四个16
 		sumcheck += data_buf[i]; //从帧头开始，对每一字节进行求和，直到DATA区结束
 		addcheck += sumcheck;		 //每一字节的求和操作，进行一次sumcheck的累加
 	}
-	data_buf[12] = sumcheck;
-	data_buf[13] = addcheck;
+	data_buf[14] = sumcheck;
+	data_buf[15] = addcheck;
 	
 	//数据发送至上位机//
-	for (i = 0;i < 14; i++)
+	for (i = 0;i < 16; i++)
 	uart_putchar(UART_1, data_buf[i]);
 	
 }

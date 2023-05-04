@@ -29,6 +29,7 @@
 
 void main()
 {
+	int16 adc_err_read;
 	board_init();
 
 	// ³õÊ¼»¯¼Ä´æÆ÷,ÎğÉ¾³ı´Ë¾ä´úÂë¡£	
@@ -50,13 +51,14 @@ void main()
 	{
 		
 		
-//		printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc1,adc2,adc3,adc4,adc_err);
+		printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc1,adc2,adc3,adc4,adc_err);
 //		printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc_err_array[3],adc_err_array[4],adc_err);
 //		printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
 //		printf("Dir_judge_flag = %d \r\n",Dir_judge_flag);
 //		printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
-
-		send_four_data(adc1,adc2,adc3,adc4);
+		
+		adc_err_read =(int16)(adc_err*100);
+		send_four_data(0xF1,adc1,adc2,adc3,adc4,adc_err_read);
 		delay_ms(10);
   }
 }
