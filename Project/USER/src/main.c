@@ -59,6 +59,7 @@ void main()
 		
 		adc_err_read =(int16)(adc_err*100);
 		send_five_data(0xF1,adc1,adc2,adc3,adc4,adc_err_read);
+		send_five_data(0xF2,Dir_judge_flag,0,0,0,0);
 		delay_ms(10);
   }
 }

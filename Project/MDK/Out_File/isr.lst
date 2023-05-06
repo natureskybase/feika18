@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  isr                                                                04/05/23  22:14:08  PAGE 1   
+C251 COMPILER V5.60.0,  isr                                                                06/05/23  18:04:24  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE isr
@@ -66,7 +66,7 @@ stmt  level    source
    53   2              UART2_CLEAR_TX_FLAG;
    54   2          busy[2] = 0;
    55   2        }
-C251 COMPILER V5.60.0,  isr                                                                04/05/23  22:14:08  PAGE 2   
+C251 COMPILER V5.60.0,  isr                                                                06/05/23  18:04:24  PAGE 2   
 
    56   1          if(UART2_GET_RX_FLAG)
    57   1        {
@@ -134,7 +134,7 @@ stmt  level    source
   118   1      }
   119          void INT2_Isr() interrupt 10
   120          {
-C251 COMPILER V5.60.0,  isr                                                                04/05/23  22:14:08  PAGE 3   
+C251 COMPILER V5.60.0,  isr                                                                06/05/23  18:04:24  PAGE 3   
 
   121   1        INT2_CLEAR_FLAG;  //清除中断标志
   122   1      }
@@ -164,95 +164,136 @@ stmt  level    source
   146          void TM3_Isr() interrupt 19
   147          {
   148   1        TIM3_CLEAR_FLAG; //清除中断标志
-  149   1        
-  150   1      }
-  151          
-  152          void TM4_Isr() interrupt 20    //函数
-  153          {
-  154   1        TIM4_CLEAR_FLAG; //清除中断标志
-  155   1      ///*****************************************/ 
-  156   1        if(adc1 <1000 && adc2 <1000 && adc3 <1000 && adc4 <1000)
-  157   1          order_speed = 0;
-  158   1      
-  159   1        Motor_Control(order_speed,order_speed);
-  160   1        
-  161   1        Read_Adc_Value();
-  162   1        ADC_error_processing(1,0,0);
-  163   1        ADC_error_window_filtering();
-  164   1        ADC_error_weight_filtering();
-  165   1        
-  166   1        Dir_judge_flag = Direct_judge();
-  167   1        
-  168   1        switch (Dir_judge_flag)
-  169   1        {
-  170   2          case(0)://直道
-  171   2            order_angle = Correct_Angle(90,0,0);
-  172   2            order_speed = 2500;
-  173   2            angle_limit = 100;
-  174   2          break;
-  175   2          
-  176   2          case(1)://左弯道
-  177   2            order_angle = Correct_Angle(145,0,0);
-  178   2            order_speed = 2450;
-  179   2          break;
-  180   2          
-  181   2          case(2)://右弯道
-  182   2            order_angle = Correct_Angle(145,0,0);
-  183   2            order_speed = 2450;
-  184   2          break;
-  185   2          
-  186   2          case(8):
-C251 COMPILER V5.60.0,  isr                                                                04/05/23  22:14:08  PAGE 4   
+  149   1      ///*****************************************/ 
+  150   1        if(Roundabout_flag_L == 1)
+  151   1        {
+  152   2          order_angle = 100;
+  153   2          order_speed = 2500;
+  154   2          angle_limit = 100;
+  155   2        }
+  156   1        
+  157   1        if(Roundabout_flag_R == 1)
+  158   1        {
+  159   2          order_angle = -100;
+  160   2          order_speed = 2500;
+  161   2          angle_limit = 100;
+  162   2        }
+  163   1        Steer_Spin_limit(order_angle,angle_limit);
+  164   1        Motor_Control(order_speed,order_speed);
+  165   1        Roundabout_count--;
+  166   1        
+  167   1        if(Roundabout_count == 0)
+  168   1        IE2 |= 0x40;           // 使能定时器4中断
+  169   1      
+  170   1        
+  171   1      }
+  172          
+  173          void TM4_Isr() interrupt 20    //函数
+  174          {
+  175   1        TIM4_CLEAR_FLAG; //清除中断标志
+  176   1      ///*****************************************/ 
+  177   1        if(adc1 <1000 && adc2 <1000 && adc3 <1000 && adc4 <1000)
+  178   1          order_speed = 0;
+  179   1      
+  180   1        Motor_Control(order_speed,order_speed);
+  181   1        
+  182   1        Read_Adc_Value();
+  183   1        ADC_error_processing(1,0,0);
+  184   1        ADC_error_window_filtering();
+  185   1        ADC_error_weight_filtering();
+  186   1        
+C251 COMPILER V5.60.0,  isr                                                                06/05/23  18:04:24  PAGE 4   
 
-  187   2            order_angle = Correct_Angle(160,0,0);
-  188   2            order_speed = 2550;
-  189   2            angle_limit = 90;
-  190   2          break;
-  191   2          
-  192   2          case(9):
-  193   2            order_angle = Correct_Angle(160,0,0.3);
-  194   2            order_speed = 2550;
-  195   2            angle_limit = 90;
-  196   2          break;
-  197   2        }
-  198   1        
-  199   1        lost_line_judge();//丢线检测
-  200   1        lostline_deal();  //丢线处理
-  201   1        
-  202   1        Steer_Spin_limit(order_angle,angle_limit);
-  203   1        
-  204   1        
-  205   1        
-  206   1      }
-  207          
-  208          //void  INT0_Isr()  interrupt 0;
-  209          //void  TM0_Isr()   interrupt 1;
-  210          //void  INT1_Isr()  interrupt 2;
-  211          //void  TM1_Isr()   interrupt 3;
-  212          //void  UART1_Isr() interrupt 4;
-  213          //void  ADC_Isr()   interrupt 5;
-  214          //void  LVD_Isr()   interrupt 6;
-  215          //void  PCA_Isr()   interrupt 7;
-  216          //void  UART2_Isr() interrupt 8;
-  217          //void  SPI_Isr()   interrupt 9;
-  218          //void  INT2_Isr()  interrupt 10;
-  219          //void  INT3_Isr()  interrupt 11;
-  220          //void  TM2_Isr()   interrupt 12;
-  221          //void  INT4_Isr()  interrupt 16;
-  222          //void  UART3_Isr() interrupt 17;
-  223          //void  UART4_Isr() interrupt 18;
-  224          //void  TM3_Isr()   interrupt 19;
-  225          //void  TM4_Isr()   interrupt 20;
-  226          //void  CMP_Isr()   interrupt 21;
-  227          //void  I2C_Isr()   interrupt 24;
-  228          //void  USB_Isr()   interrupt 25;
-  229          //void  PWM1_Isr()  interrupt 26;
-  230          //void  PWM2_Isr()  interrupt 27;
+  187   1        Dir_judge_flag = Direct_judge();
+  188   1        
+  189   1        switch (Dir_judge_flag)
+  190   1        {
+  191   2          case(0)://直道
+  192   2            order_angle = Correct_Angle(80,10,0);
+  193   2            order_speed = 2500;
+  194   2            angle_limit = 100;
+  195   2          break;
+  196   2          
+  197   2          case(1)://左弯道
+  198   2            order_angle = Correct_Angle(120,0,0);
+  199   2            order_speed = 2450;
+  200   2            angle_limit = 100;
+  201   2          break;
+  202   2          
+  203   2          case(2)://右弯道
+  204   2            order_angle = Correct_Angle(120,0,0);
+  205   2            order_speed = 2450;
+  206   2            angle_limit = 100;
+  207   2          break;
+  208   2          
+  209   2          case(3)://左环岛
+  210   2            IE2 |= 0x00;           // 失能定时器4中断
+  211   2            delay_ms(900);         //延时多久进入环岛
+  212   2            delay_ms(400);
+  213   2            Roundabout_count = 200; //中断时间1s
+  214   2            pit_timer_ms(TIM_3,5); //开启定时器3中断
+  215   2          break;
+  216   2          
+  217   2          case(4)://右环岛
+  218   2            IE2 |= 0x00;           // 失能定时器4中断
+  219   2            delay_ms(900);         //延时多久进入环岛
+  220   2            delay_ms(400);
+  221   2            Roundabout_count = 200;
+  222   2            pit_timer_ms(TIM_3,5); //开启定时器3中断
+  223   2          break;
+  224   2            
+  225   2          case(8)://左转弯过渡
+  226   2            order_angle = Correct_Angle(160,0,0);
+  227   2            order_speed = 2550;
+  228   2            angle_limit = 100;
+  229   2          break;
+  230   2          
+  231   2          case(9)://右转弯过渡
+  232   2            order_angle = Correct_Angle(160,0,0);
+  233   2            order_speed = 2550;
+  234   2            angle_limit = 100;
+  235   2          break;
+  236   2        }
+  237   1        
+  238   1        lost_line_judge();//丢线检测
+  239   1        lostline_deal();  //丢线处理
+  240   1        
+  241   1        Steer_Spin_limit(order_angle,angle_limit);
+  242   1        
+  243   1        
+  244   1        
+  245   1      }
+  246          
+  247          //void  INT0_Isr()  interrupt 0;
+  248          //void  TM0_Isr()   interrupt 1;
+  249          //void  INT1_Isr()  interrupt 2;
+  250          //void  TM1_Isr()   interrupt 3;
+  251          //void  UART1_Isr() interrupt 4;
+  252          //void  ADC_Isr()   interrupt 5;
+C251 COMPILER V5.60.0,  isr                                                                06/05/23  18:04:24  PAGE 5   
+
+  253          //void  LVD_Isr()   interrupt 6;
+  254          //void  PCA_Isr()   interrupt 7;
+  255          //void  UART2_Isr() interrupt 8;
+  256          //void  SPI_Isr()   interrupt 9;
+  257          //void  INT2_Isr()  interrupt 10;
+  258          //void  INT3_Isr()  interrupt 11;
+  259          //void  TM2_Isr()   interrupt 12;
+  260          //void  INT4_Isr()  interrupt 16;
+  261          //void  UART3_Isr() interrupt 17;
+  262          //void  UART4_Isr() interrupt 18;
+  263          //void  TM3_Isr()   interrupt 19;
+  264          //void  TM4_Isr()   interrupt 20;
+  265          //void  CMP_Isr()   interrupt 21;
+  266          //void  I2C_Isr()   interrupt 24;
+  267          //void  USB_Isr()   interrupt 25;
+  268          //void  PWM1_Isr()  interrupt 26;
+  269          //void  PWM2_Isr()  interrupt 27;
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       661     ------
+  code size            =       872     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

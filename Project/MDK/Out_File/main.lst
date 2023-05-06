@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               04/05/23  22:14:52  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               06/05/23  18:04:25  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -66,7 +66,7 @@ stmt  level    source
    53   2          
    54   2          printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc
              -1,adc2,adc3,adc4,adc_err);
-C251 COMPILER V5.60.0,  main                                                               04/05/23  22:14:52  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               06/05/23  18:04:25  PAGE 2   
 
    55   2      //    printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc
              -_err_array[3],adc_err_array[4],adc_err);
@@ -76,15 +76,16 @@ stmt  level    source
    59   2          
    60   2          adc_err_read =(int16)(adc_err*100);
    61   2          send_five_data(0xF1,adc1,adc2,adc3,adc4,adc_err_read);
-   62   2          delay_ms(10);
-   63   2        }
-   64   1      }
-   65          
+   62   2          send_five_data(0xF2,Dir_judge_flag,0,0,0,0);
+   63   2          delay_ms(10);
+   64   2        }
+   65   1      }
+   66          
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       248     ------
+  code size            =       267     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

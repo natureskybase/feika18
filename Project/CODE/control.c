@@ -11,7 +11,11 @@ float order_speed=0;			// 目标速度
 float adc_err=0;         // 电感误差
 float adc_err_array[5];  // 窗口电感误差
 int16 window_flag=1;   	 // 窗口标志位
-int16 Roundabout_flag=0; // 环岛检测标志位
+
+int16 Roundabout_flag_L=0; // 左环岛检测标志位
+int16 Roundabout_flag_R=0; // 右环岛检测标志位
+int16 Roundabout_count=0;  // 环岛打死中断次数
+
 float ADC_error_a=0;     // 电感误差加速度(ms)
 int16 lostline_flag;     // 丢线标志
 int16 lostline_dir;      // 左,右丢线标志
@@ -294,14 +298,30 @@ int16 Direct_judge(void)
 	 static int16 res = 0;  // 小车当运行位置:0表示直道 
 	
 	//  阈值判断方向 //
+	if(adc_err >= -0.29 && adc_err <= 0.29)
+	res = 0;				// 直道
+	
 	if(res == 0 && res != 2 && adc_err >= 0.29)
 	res = 1;        // 左转弯
 	
-	else if(res == 0 && res != 1 && adc_err <= -0.29)
+	if(res == 0 && res != 1 && adc_err <= -0.29)
 	res = 2;        // 右转弯
 	
-	else if(adc_err >= -0.29 && adc_err <= 0.29)
-	res = 0;				// 直道(暂时未考虑环岛的影响)
+	// 环岛检测 //
+	if(adc1>3900 && adc2 >3900)
+	{
+		delay_ms(10);
+		if(adc3 < 3900 && adc4 < 3900)
+	  res = 3;    // 左环岛入环
+		Roundabout_flag_L = 1;
+	}
+	if(adc3>3900 && adc4 >3900)
+	{
+		delay_ms(10);
+		if(adc1 < 3900 && adc2 < 3900)
+		res = 4;    // 右环岛入环
+		Roundabout_flag_R = 1;
+	}
 	
 	// 过渡状态的判断 //
 	if(adc_err >= 0.6 && adc4 <= 500)

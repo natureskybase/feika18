@@ -21,7 +21,9 @@ extern float order_speed;
 extern float adc_err;
 extern float adc_err_array[];
 extern int16 window_flag;
-extern int16 Roundabout_flag;
+extern int16 Roundabout_flag_L;
+extern int16 Roundabout_flag_R;
+extern int16 Roundabout_count;
 extern float ADC_error_a;
 extern int16 Dir_judge_flag;
 

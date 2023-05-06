@@ -22,20 +22,24 @@ Dialog DLL:      TCORE51.DLL V2.66.4.0
  
 <h2>Project:</h2>
 D:\Users\10548\Desktop\feika\Project\MDK\SEEKFREE.uvproj
-Project File Date:  05/04/2023
+Project File Date:  05/06/2023
 
 <h2>Output:</h2>
 Build target 'STC32G12K128'
 compiling control.c...
-..\CODE\control.c(213): warning C183: dead assignment eliminated
-..\CODE\control.c(214): warning C183: dead assignment eliminated
-..\CODE\control.c(219): warning C183: dead assignment eliminated
-..\CODE\control.c(450): warning C184: value of 'target_angle_last' possibly undefined
+..\CODE\control.c(217): warning C183: dead assignment eliminated
+..\CODE\control.c(218): warning C183: dead assignment eliminated
+..\CODE\control.c(223): warning C183: dead assignment eliminated
+..\CODE\control.c(470): warning C184: value of 'target_angle_last' possibly undefined
 linking...
-Program Size: data=8.0 edata+hdata=2451 xdata=0 const=3828 code=24276
+*** WARNING L15: MULTIPLE CALL TO FUNCTION
+    NAME:    Motor_Control/motor
+    CALLER1: TM3_Isr/isr
+    CALLER2: TM4_Isr/isr
+Program Size: data=8.0 edata+hdata=2459 xdata=0 const=3840 code=24628
 creating hex file from ".\Out_File\SEEKFREE"...
-".\Out_File\SEEKFREE" - 0 Error(s), 4 Warning(s).
-Build Time Elapsed:  00:00:00
+".\Out_File\SEEKFREE" - 0 Error(s), 5 Warning(s).
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
