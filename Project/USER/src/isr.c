@@ -132,7 +132,11 @@ void INT4_Isr() interrupt 16
 
 void TM0_Isr() interrupt 1
 {
-
+	Read_Adc_Value();
+	ADC_error_processing(1, 0, 0);
+	ADC_error_window_filtering();
+	ADC_error_weight_filtering();
+	
 }
 void TM1_Isr() interrupt 3
 {
@@ -146,100 +150,65 @@ void TM2_Isr() interrupt 12
 void TM3_Isr() interrupt 19
 {
 	TIM3_CLEAR_FLAG; //清除中断标志
-///*****************************************/	
-	if(Roundabout_flag_L == 1)
-	{
-		order_angle = 100;
-		order_speed = 2500;
-		angle_limit = 100;
-	}
-	
-	if(Roundabout_flag_R == 1)
-	{
-		order_angle = -100;
-		order_speed = 2500;
-		angle_limit = 100;
-	}
-	Steer_Spin_limit(order_angle,angle_limit);
-	Motor_Control(order_speed,order_speed);
-	Roundabout_count--;
-	
-	if(Roundabout_count == 0)
-	IE2 |= 0x40; 					 // 使能定时器4中断
 
-	
+
 }
 
 void TM4_Isr() interrupt 20    //函数
 {
 	TIM4_CLEAR_FLAG; //清除中断标志
-///*****************************************/	
+/*****************************************/	
 	if(adc1 <1000 && adc2 <1000 && adc3 <1000 && adc4 <1000)
 		order_speed = 0;
 
-	Motor_Control(order_speed,order_speed);
-	
-	Read_Adc_Value();
-	ADC_error_processing(1,0,0);
-	ADC_error_window_filtering();
-	ADC_error_weight_filtering();
 	
 	Dir_judge_flag = Direct_judge();
-	
 	switch (Dir_judge_flag)
 	{
 		case(0)://直道
-			order_angle = Correct_Angle(80,10,0);
+//			order_angle = Correct_Angle(80,10,0);
+			order_angle = Dev_Tolerant_Correc_Ang(1, 200, 0, 12, 60, 0, 5, 105, 0);
 			order_speed = 2500;
 			angle_limit = 100;
 		break;
 		
 		case(1)://左弯道
-			order_angle = Correct_Angle(120,0,0);
+//			order_angle = Correct_Angle(150,0,0);
+			order_angle = Dev_Tolerant_Correc_Ang(1, 110, 0, 10, 75, 0, 0, 150, 0);
 			order_speed = 2450;
 			angle_limit = 100;
 		break;
 		
 		case(2)://右弯道
-			order_angle = Correct_Angle(120,0,0);
+//			order_angle = Correct_Angle(150,0,0);
+			order_angle = Dev_Tolerant_Correc_Ang(1, 110, 0, 10, 75, 0, 0, 150, 0);
 			order_speed = 2450;
 			angle_limit = 100;
 		break;
 		
-		case(3)://左环岛
-			IE2 |= 0x00; 					 // 失能定时器4中断
-			delay_ms(900);         //延时多久进入环岛
-			delay_ms(400);
-			Roundabout_count = 200; //中断时间1s
-			pit_timer_ms(TIM_3,5); //开启定时器3中断
-		break;
-		
-		case(4)://右环岛
-			IE2 |= 0x00; 					 // 失能定时器4中断
-			delay_ms(900);         //延时多久进入环岛
-			delay_ms(400);
-			Roundabout_count = 200;
-			pit_timer_ms(TIM_3,5); //开启定时器3中断
-		break;
-			
 		case(8)://左转弯过渡
-			order_angle = Correct_Angle(160,0,0);
+//			order_angle = Correct_Angle(150,0,0);
+			order_angle = Dev_Tolerant_Correc_Ang(1, 140, 0, 16, 18, 0, 2, 150, 0);
 			order_speed = 2550;
 			angle_limit = 100;
 		break;
 		
 		case(9)://右转弯过渡
-			order_angle = Correct_Angle(160,0,0);
+//			order_angle = Correct_Angle(150,0,0);
+			order_angle = Dev_Tolerant_Correc_Ang(1, 140, 0, 16, 18, 0, 2, 150, 0);
 			order_speed = 2550;
 			angle_limit = 100;
 		break;
+		
+		case(3)://左环岛
+			Roundabout_flag_L = 1;
+		break;
+		
+		case(4)://右环岛
+			Roundabout_flag_R = 1;
+		break;
+			
 	}
-	
-	lost_line_judge();//丢线检测
-	lostline_deal();  //丢线处理
-	
-	Steer_Spin_limit(order_angle,angle_limit);
-	
 	
 	
 }

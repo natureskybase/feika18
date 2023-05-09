@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               06/05/23  18:04:25  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               09/05/23  22:12:15  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -43,49 +43,61 @@ stmt  level    source
    30          void main()
    31          {
    32   1        int16 adc_err_read;
-   33   1        board_init();
-   34   1      
-   35   1        // 初始化寄存器,勿删除此句代码。  
-   36   1        // 此处编写用户代码(例如：外设初始化代码等)
-   37   1        PID_struct_init(&pid_left_,POSITION_PID,10000,5000,30,0.5,22); //pid_left_PID初始化
-   38   1        PID_struct_init(&pid_right_,POSITION_PID,10000,5000,28,0.4,11); //pid_right_PID初始化
-   39   1        My_Adc_Init(); //adc初始化
-   40   1        Motor_Init(); //电机初始化
-   41   1        Steer_Init(); //舵机初始化
-   42   1        Brushless_Init(); //无刷初始化
-   43   1        OLED_Init();    //OLED初始化
-   44   1        Timer4_Init(5);
+   33   1        int16 order_angle_read;
+   34   1        board_init();
+   35   1      
+   36   1        // 初始化寄存器,勿删除此句代码。  
+   37   1        // 此处编写用户代码(例如：外设初始化代码等)
+   38   1        PID_struct_init(&pid_left_,POSITION_PID,10000,5000,30,0.5,22); //pid_left_PID初始化
+   39   1        PID_struct_init(&pid_right_,POSITION_PID,10000,5000,28,0.4,11); //pid_right_PID初始化
+   40   1        My_Adc_Init(); //adc初始化
+   41   1        Motor_Init(); //电机初始化
+   42   1        Steer_Init(); //舵机初始化
+   43   1        Brushless_Init(); //无刷初始化
+   44   1        OLED_Init();    //OLED初始化
    45   1        LED=0;  //默认关闭LED
    46   1        BUZZER=0; //默认关闭buzzer
    47   1        
-   48   1      //  pwm_init(PWMB_CH4_P23,10000,0);
-   49   1      //  uart_init(UART_2,UART2_RX_P10,UART2_TX_P11,38400, TIM_2);
-   50   1          while(1)
-   51   1        {
-   52   2          
-   53   2          
-   54   2          printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc
-             -1,adc2,adc3,adc4,adc_err);
-C251 COMPILER V5.60.0,  main                                                               06/05/23  18:04:25  PAGE 2   
+   48   1      //  Timer_Init();// 启动定时器3和定时器4,使能定时器4中断
+   49   1        pit_timer_ms(TIM_4, 5);
+   50   1        pit_timer_ms(TIM_0, 2);
+   51   1        
+   52   1          while(1)
+   53   1        {
+   54   2        
+   55   2          Steer_Spin_limit(order_angle,angle_limit);
+C251 COMPILER V5.60.0,  main                                                               09/05/23  22:12:15  PAGE 2   
 
-   55   2      //    printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc
-             -_err_array[3],adc_err_array[4],adc_err);
-   56   2      //    printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
-   57   2      //    printf("Dir_judge_flag = %d \r\n",Dir_judge_flag);
-   58   2      //    printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
-   59   2          
-   60   2          adc_err_read =(int16)(adc_err*100);
-   61   2          send_five_data(0xF1,adc1,adc2,adc3,adc4,adc_err_read);
-   62   2          send_five_data(0xF2,Dir_judge_flag,0,0,0,0);
-   63   2          delay_ms(10);
-   64   2        }
-   65   1      }
-   66          
+   56   2          Motor_Control(order_speed,order_speed);
+   57   2          
+   58   2          lost_line_judge();//丢线检测
+   59   2          lostline_deal();  //丢线处理
+   60   2          
+   61   2          Roundabout_deal();//环岛处理函数
+   62   2          
+   63   2        
+   64   2          //上位机数值显示//
+   65   2          adc_err_read =(int16)(adc_err * 100);
+   66   2          order_angle_read =(int16)(order_angle);
+   67   2          send_five_data(0xF1, adc1, adc2, adc3, adc4, adc_err_read);
+   68   2          send_five_data(0xF2, Dir_judge_flag, order_angle_read, 0, 0, 0);
+   69   2          
+   70   2          
+   71   2          delay_ms(5);
+   72   2        }
+   73   1      }
+   74          
+   75          
+   76          
+   77          
+   78          
+   79          
+   80          
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       267     ------
+  code size            =       266     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -100,7 +112,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =        74     ------
+  hconst size          =    ------     ------
 End of Module Information.
 
 

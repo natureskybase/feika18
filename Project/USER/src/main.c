@@ -30,6 +30,7 @@
 void main()
 {
 	int16 adc_err_read;
+	int16 order_angle_read;
 	board_init();
 
 	// 初始化寄存器,勿删除此句代码。	
@@ -41,26 +42,39 @@ void main()
 	Steer_Init(); //舵机初始化
 	Brushless_Init(); //无刷初始化
 	OLED_Init();    //OLED初始化
-	Timer4_Init(5);
 	LED=0;	//默认关闭LED
 	BUZZER=0;	//默认关闭buzzer
 	
-//	pwm_init(PWMB_CH4_P23,10000,0);
-//	uart_init(UART_2,UART2_RX_P10,UART2_TX_P11,38400, TIM_2);
+//	Timer_Init();// 启动定时器3和定时器4,使能定时器4中断
+	pit_timer_ms(TIM_4, 5);
+	pit_timer_ms(TIM_0, 2);
+	
     while(1)
 	{
+	
+		Steer_Spin_limit(order_angle,angle_limit);
+		Motor_Control(order_speed,order_speed);
+		
+		lost_line_judge();//丢线检测
+		lostline_deal();  //丢线处理
+		
+		Roundabout_deal();//环岛处理函数
+		
+	
+		//上位机数值显示//
+		adc_err_read =(int16)(adc_err * 100);
+		order_angle_read =(int16)(order_angle);
+		send_five_data(0xF1, adc1, adc2, adc3, adc4, adc_err_read);
+		send_five_data(0xF2, Dir_judge_flag, order_angle_read, 0, 0, 0);
 		
 		
-		printf("Dir_judge_flag = %d  ADC_1=%d  ADC_2=%d  ADC_3=%d  ADC_4=%d  adc_err=%f\r\n",Dir_judge_flag,adc1,adc2,adc3,adc4,adc_err);
-//		printf("adc[1]=%f  adc[2]=%f  adc[3]=%f  adc[4]=%f err=%f \r\n",adc_err_array[1],adc_err_array[2],adc_err_array[3],adc_err_array[4],adc_err);
-//		printf("%f %f\r\n",Correct_Angle(130,1200,0),adc_err);
-//		printf("Dir_judge_flag = %d \r\n",Dir_judge_flag);
-//		printf("%f %f\r\n",akeman_left.current_speed,akeman_right.current_speed);
-		
-		adc_err_read =(int16)(adc_err*100);
-		send_five_data(0xF1,adc1,adc2,adc3,adc4,adc_err_read);
-		send_five_data(0xF2,Dir_judge_flag,0,0,0,0);
-		delay_ms(10);
+		delay_ms(5);
   }
 }
+
+
+
+
+
+
 

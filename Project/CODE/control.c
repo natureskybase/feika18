@@ -2,24 +2,29 @@
 #include "math.h"
 #include "pid.h"
 
-
 akeman_t akeman_left ;		// 结构体变量，记录脉冲，实际速度，目标速度
 akeman_t akeman_right;
 uint8 pid_flag=0;					// 电机闭环开启标志
+
+
 float order_angle=0;			// 目标角度
 float order_speed=0;			// 目标速度
+float ADC_error_a=0;     // 电感误差加速度(ms)
+
 float adc_err=0;         // 电感误差
 float adc_err_array[5];  // 窗口电感误差
 int16 window_flag=1;   	 // 窗口标志位
 
 int16 Roundabout_flag_L=0; // 左环岛检测标志位
 int16 Roundabout_flag_R=0; // 右环岛检测标志位
-int16 Roundabout_count=0;  // 环岛打死中断次数
+int16 Roundabout_count=0;  // 环岛打死计时
 
-float ADC_error_a=0;     // 电感误差加速度(ms)
-int16 lostline_flag;     // 丢线标志
-int16 lostline_dir;      // 左,右丢线标志
-int16 Dir_judge_flag;    // 位置检测标志位
+
+int16 lostline_flag=0;     // 丢线标志
+int16 lostline_dir=0;      // 左,右丢线标志
+int16 lostline_count;      // 丢线打死计数
+
+int16 Dir_judge_flag=0;    // 位置检测标志位
 
 
 enum Car_State			// 用于表示小车当前状态
@@ -126,7 +131,7 @@ float ADC_error_processing(float A,float B,float compensation)
 //	考虑电感值误差处理
 //	adc_err = (1/1.0*adc1-1/1.0*adc4)/(1/1.0*adc1+1/1.0*adc4);
 //	adc_err = (adc4 - adc1)/10;
-	adc_err = (A*(adc1-adc4)/(float)(adc1+adc4))+(B*(adc2-adc3)/(float)(adc2+adc3))+compensation/100;
+	adc_err = (A*(adc1-adc4)/(float)(adc1+adc4))+(B*(adc2-adc3)/(float)(adc2+adc3))+compensation;
 	return adc_err;
 }
 
@@ -306,21 +311,19 @@ int16 Direct_judge(void)
 	
 	if(res == 0 && res != 1 && adc_err <= -0.29)
 	res = 2;        // 右转弯
+
 	
 	// 环岛检测 //
 	if(adc1>3900 && adc2 >3900)
 	{
-		delay_ms(10);
 		if(adc3 < 3900 && adc4 < 3900)
 	  res = 3;    // 左环岛入环
-		Roundabout_flag_L = 1;
 	}
+	
 	if(adc3>3900 && adc4 >3900)
 	{
-		delay_ms(10);
 		if(adc1 < 3900 && adc2 < 3900)
 		res = 4;    // 右环岛入环
-		Roundabout_flag_R = 1;
 	}
 	
 	// 过渡状态的判断 //
@@ -333,7 +336,36 @@ int16 Direct_judge(void)
 	return res;
 }
 
-
+/**************************************************************************
+函数功能：环岛处理函数
+输入参数：无
+**************************************************************************/
+void Roundabout_deal(void)
+{
+	delay_ms(100);//打角延时
+	Roundabout_count = 200; //时间计算为Roundabout_count * 0.01 (s)
+	if(Roundabout_flag_L == 1)
+	{
+		while(Roundabout_count-- > 0)
+		{
+			Steer_Spin(-28);
+			Motor_Control(2550,2550);
+			delay_ms(10);
+		}
+		Roundabout_flag_L = 0;
+	}
+		
+	if(Roundabout_flag_R == 1)
+	{
+		while(Roundabout_count-- > 0)
+		{
+			Steer_Spin(28);
+			Motor_Control(2550,2550);
+			delay_ms(10);
+		}
+		Roundabout_flag_R = 0;
+	}
+}
 /**************************************************************************
 函数功能：轨道状态检测(Version 2)
 输入参数：无
@@ -410,7 +442,7 @@ void lost_line_judge(void)
 	lostline_dir = 0; 	
 	if(lostline_flag==0)//丢线标志为0时进入
 	{
-		if(adc1 < 2000 && adc2 < 2000 && adc3 < 2000 && adc4 < 2000) //进入丢线条件
+		if(adc1 < 3000 && adc2 < 3000 && adc3 < 3000 && adc4 < 3000) //进入丢线条件
 			lostline_flag=1;//丢线标志置1
 
 		for(i=0;i<5;i++)//奇数
@@ -435,16 +467,30 @@ void lost_line_judge(void)
 **************************************************************************/
 void lostline_deal(void)
 {
-
+	lostline_count = 200; //时间计算为Roundabout_count * 0.01 (s)
 	if(lostline_flag==1)
 		{
 			if(lostline_dir==1)//左丢线
-				order_angle = -100;
-			
+			{
+				while(Roundabout_count-- > 0)
+				{
+				Steer_Spin(-28);
+				Motor_Control(2550,2550);
+				delay_ms(10);
+				}
+			}
+		
 			if(lostline_dir==2)//右丢线
-				order_angle = 100;
+			{
+				while(Roundabout_count-- > 0)
+				{
+				Steer_Spin(-28);
+				Motor_Control(2550,2550);
+				delay_ms(10);
+				}
+			}
 
-			if(adc1 > 2000 && adc2 > 2000 && adc3 > 2000 && adc4 > 2000)
+			if(adc1 > 1000 && adc2 > 1000 && adc3 > 1000 && adc4 > 1000)
 				lostline_flag=0;
 		}
 }
@@ -473,6 +519,72 @@ float Correct_Angle(float kp,float kd,float ki)
 	adc_err_last = adc_err;
 	
 	return target_angle;
+}
+/*********************************************************************
+
+函数功能： 根据 ADC值 修正 舵机 角度
+输入参数： 容忍度
+					方向误差：Kp Ki Kd
+					位置误差：Kp Ki Kd
+					传统PID：Kp Kd
+返回值： 舵机的最终调整角度
+******************************************************************/
+float Dev_Tolerant_Correc_Ang(
+		float Tolerance,
+		float DKp,
+		float DKi,
+		float Dkd,
+		float PKp,
+		float PKi,
+		float PKd,
+		float kp,
+		float kd)
+{
+	
+	static float Itg_dev_err = 0.0;//积分调节，其实可要可不要，设 0 即可
+	static float Itg_posi_err = 0.0;
+		
+	static float dev_last;//静态声明 前次偏心率
+	static float dev_last2;//静态声明 再前次偏心率
+	//可以不用，但是不能不写
+	
+	float dev, Delta_dev, Delta_dev_las; //声明 偏心率,偏心率变化量，前一次偏心率变化量
+	
+	float Direc_angle, Posi_angle;//声明 方向角度，位置角度
+	
+	
+	dev = adc_err;  //计算偏心率（应该在 -1 ~ 1之间）
+	
+	//如果偏心率已经大于 忍耐度 了，直接使用 传统位置 pid
+	if(fabs(dev) >= Tolerance)
+	{
+		return Correct_Angle(kp,kd, 0);
+	}
+	
+	//能跑到这里，肯定 是没有 大于 忍耐度 的
+
+	
+	Delta_dev = dev - dev_last;// 计算偏心率变化量
+	Delta_dev_las = dev_last - dev_last2;
+	
+	//对方向PID目标：使 偏心率变化量(Delta_dev) 为零，则 车 走直线 或者 以恒定 曲率半径 过弯
+	//由于 Delta_dev 的调节目标是 0 ，直接用本身当Error就行
+	
+	Itg_dev_err += Delta_dev;// 累计 积分误差
+	Direc_angle = DKp * Delta_dev + DKi * Itg_dev_err + Dkd * (Delta_dev - Delta_dev_las);// 计算PID
+	
+	
+	//对位置PID目标：使 偏心率（dev） 为零，即让 走直线 但是 线不在中心 的车 《!缓慢!》 回到中心
+	//参数必须远小于方向PID，不然就变成普通位置PID了
+	
+	Itg_posi_err += dev;// 累计 位置误差
+	Posi_angle = PKp * dev + PKi * Itg_posi_err + PKd * Delta_dev;// 计算PID
+	
+	dev_last2 = dev_last;
+	dev_last = dev;
+	
+	return Direc_angle + Posi_angle; // 叠加返回
+	
 }
 
 /**************************************************************************

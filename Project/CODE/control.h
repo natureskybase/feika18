@@ -13,6 +13,7 @@ typedef struct{
 } akeman_t;
 
 /****扩展变量****/
+extern float bias;
 extern akeman_t akeman_left;
 extern akeman_t akeman_right;
 extern uint8 pid_flag;
@@ -24,6 +25,7 @@ extern int16 window_flag;
 extern int16 Roundabout_flag_L;
 extern int16 Roundabout_flag_R;
 extern int16 Roundabout_count;
+extern int16 lostline_count; 
 extern float ADC_error_a;
 extern int16 Dir_judge_flag;
 
@@ -41,6 +43,18 @@ float Correct_Angle(float kp,float kd,float ki);
 float Dev_Err_Window_Filter_2(void);
 float ADC_Err_Trendency(void);
 int16 Direct_judge_Accele(void);
+void Roundabout_deal(void);
+float Dev_Tolerant_Correc_Ang(
+		float Tolerance,
+		float DKp,
+		float DKi,
+		float Dkd,
+		float PKp,
+		float PKi,
+		float PKd,
+		float kp,
+		float kd);//Tolerance取值范围应该在（0 - 1）
+		
 void PID_on(void);
 void PID_off(void);
 

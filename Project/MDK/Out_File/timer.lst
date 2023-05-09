@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  timer                                                              06/05/23  18:04:25  PAGE 1   
+C251 COMPILER V5.60.0,  timer                                                              09/05/23  22:12:15  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE timer
@@ -14,19 +14,39 @@ stmt  level    source
     3          /**************************************************************************
     4          函数功能：定时器中断初始化
     5          输入参数：循环周期，单位：ms
-    6          使用时钟：TIM_4
+    6          使用时钟：TIM_4和TIM_3
     7          注：中断内执行程序在 isr.c 的 TM4_Isr() 中
     8          **************************************************************************/
-    9          void Timer4_Init(uint16 time_ms)
+    9          void Timer_Init(uint16 time_ms)
    10          {
-   11   1        pit_timer_ms(TIM_4, time_ms);
-   12   1      }
-   13          
+   11   1        uint16 temp;
+   12   1        temp = (uint16)65536 - (uint16)(sys_clk / (12 * (1000 / time_ms)));
+   13   1        
+   14   1        T3L = temp;   
+   15   1        T3H = temp >> 8;
+   16   1        T4L = temp;   
+   17   1        T4H = temp >> 8;
+   18   1        
+   19   1        T4T3M |= 0x88; // 启动定时器3和定时器4
+   20   1        IE2 |= 0x40; // 使能定时器4中断
+   21   1      }
+   22          
+   23          void Timer4_to_Timer3(void)
+   24          {
+   25   1        IE2 &= ~0x40;
+   26   1        IE2 |= 0x20;
+   27   1      }
+   28          
+   29          void Timer3_to_Timer4(void)
+   30          {
+   31   1        IE2 &= ~0x20;
+   32   1        IE2 |= 0x40;
+   33   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =         9     ------
+  code size            =        60     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
