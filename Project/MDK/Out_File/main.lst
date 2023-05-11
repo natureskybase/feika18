@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               09/05/23  22:12:15  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               11/05/23  15:09:08  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -60,44 +60,43 @@ stmt  level    source
    47   1        
    48   1      //  Timer_Init();// 启动定时器3和定时器4,使能定时器4中断
    49   1        pit_timer_ms(TIM_4, 5);
-   50   1        pit_timer_ms(TIM_0, 2);
-   51   1        
-   52   1          while(1)
-   53   1        {
-   54   2        
-   55   2          Steer_Spin_limit(order_angle,angle_limit);
-C251 COMPILER V5.60.0,  main                                                               09/05/23  22:12:15  PAGE 2   
+   50   1        
+   51   1          while(1)
+   52   1        {
+   53   2        
+   54   2          Steer_Spin_limit(order_angle,angle_limit);
+   55   2          Motor_Control(order_speed,order_speed);
+C251 COMPILER V5.60.0,  main                                                               11/05/23  15:09:08  PAGE 2   
 
-   56   2          Motor_Control(order_speed,order_speed);
-   57   2          
-   58   2          lost_line_judge();//丢线检测
-   59   2          lostline_deal();  //丢线处理
-   60   2          
-   61   2          Roundabout_deal();//环岛处理函数
-   62   2          
-   63   2        
-   64   2          //上位机数值显示//
-   65   2          adc_err_read =(int16)(adc_err * 100);
-   66   2          order_angle_read =(int16)(order_angle);
-   67   2          send_five_data(0xF1, adc1, adc2, adc3, adc4, adc_err_read);
-   68   2          send_five_data(0xF2, Dir_judge_flag, order_angle_read, 0, 0, 0);
+   56   2          
+   57   2      //    lost_line_judge();//丢线检测
+   58   2      //    lostline_deal();  //丢线处理
+   59   2          
+   60   2      //    Roundabout_deal();//环岛处理函数
+   61   2          
+   62   2        
+   63   2          //上位机数值显示//
+   64   2          adc_err_read =(int16)(adc_err * 100);
+   65   2          order_angle_read =(int16)(order_angle);
+   66   2          send_five_data(0xF1, adc1, adc2, adc3, adc4, adc_err_read);
+   67   2          send_five_data(0xF2, Dir_judge_flag, order_angle_read, 0, 0, 0);
+   68   2          
    69   2          
-   70   2          
-   71   2          delay_ms(5);
-   72   2        }
-   73   1      }
+   70   2          delay_ms(5);
+   71   2        }
+   72   1      }
+   73          
    74          
    75          
    76          
    77          
    78          
    79          
-   80          
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       266     ------
+  code size            =       248     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

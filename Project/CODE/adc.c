@@ -67,30 +67,32 @@ void Read_Adc_Value(void)
 	adc3 = adc_mean_filter(ADC_3,ADC_12BIT,5);		//对应板子上的IN3
 	adc4 = adc_mean_filter(ADC_4,ADC_12BIT,5);		//对应板子上的IN4
 //备用电感		
-	adc5 = adc_mean_filter(S_ADC1,ADC_12BIT,5);   //对应板子上的IN5
-	adc6 = adc_mean_filter(S_ADC5,ADC_12BIT,5);		//对应板子上的IN6
-	adc7 = adc_mean_filter(S_ADC7,ADC_12BIT,5);		//对应板子上的IN7
-	adc8 = adc_mean_filter(S_ADC11,ADC_12BIT,5);	//对应板子上的IN8
+//	adc5 = adc_mean_filter(S_ADC1,ADC_12BIT,5);   //对应板子上的IN5
+//	adc6 = adc_mean_filter(S_ADC5,ADC_12BIT,5);		//对应板子上的IN6
+//	adc7 = adc_mean_filter(S_ADC7,ADC_12BIT,5);		//对应板子上的IN7
+//	adc8 = adc_mean_filter(S_ADC11,ADC_12BIT,5);	//对应板子上的IN8
 	
 	adc1_array[0] = adc1;
 	adc2_array[0] = adc2;
 	adc3_array[0] = adc3;
 	adc4_array[0] = adc4;
-	adc5_array[0] = adc5;
-	adc6_array[0] = adc6;
-	adc7_array[0] = adc7;
-	adc8_array[0] = adc8;
+//	adc5_array[0] = adc5;
+//	adc6_array[0] = adc6;
+//	adc7_array[0] = adc7;
+//	adc8_array[0] = adc8;
 	for(adc_read_count; adc_read_count > 0; adc_read_count--)
 	{
 		adc1_array[adc_read_count] = adc1_array[adc_read_count-1];
 		adc2_array[adc_read_count] = adc2_array[adc_read_count-1];
 		adc3_array[adc_read_count] = adc3_array[adc_read_count-1];
 		adc4_array[adc_read_count] = adc4_array[adc_read_count-1];
-		adc5_array[adc_read_count] = adc5_array[adc_read_count-1];
-		adc6_array[adc_read_count] = adc6_array[adc_read_count-1];
-		adc7_array[adc_read_count] = adc7_array[adc_read_count-1];
-		adc8_array[adc_read_count] = adc8_array[adc_read_count-1];
+//		adc5_array[adc_read_count] = adc5_array[adc_read_count-1];
+//		adc6_array[adc_read_count] = adc6_array[adc_read_count-1];
+//		adc7_array[adc_read_count] = adc7_array[adc_read_count-1];
+//		adc8_array[adc_read_count] = adc8_array[adc_read_count-1];
 	}
+	
+	
 }
 
 

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  adc                                                                09/05/23  22:12:15  PAGE 1   
+C251 COMPILER V5.60.0,  adc                                                                11/05/23  15:05:50  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE adc
@@ -66,7 +66,7 @@ stmt  level    source
    55   1      }
    56          
    57          /**************************************************************************
-C251 COMPILER V5.60.0,  adc                                                                09/05/23  22:12:15  PAGE 2   
+C251 COMPILER V5.60.0,  adc                                                                11/05/23  15:05:50  PAGE 2   
 
    58          函数功能：adc读取
    59          **************************************************************************/
@@ -80,38 +80,40 @@ stmt  level    source
    67   1        adc3 = adc_mean_filter(ADC_3,ADC_12BIT,5);    //对应板子上的IN3
    68   1        adc4 = adc_mean_filter(ADC_4,ADC_12BIT,5);    //对应板子上的IN4
    69   1      //备用电感    
-   70   1        adc5 = adc_mean_filter(S_ADC1,ADC_12BIT,5);   //对应板子上的IN5
-   71   1        adc6 = adc_mean_filter(S_ADC5,ADC_12BIT,5);   //对应板子上的IN6
-   72   1        adc7 = adc_mean_filter(S_ADC7,ADC_12BIT,5);   //对应板子上的IN7
-   73   1        adc8 = adc_mean_filter(S_ADC11,ADC_12BIT,5);  //对应板子上的IN8
+   70   1      //  adc5 = adc_mean_filter(S_ADC1,ADC_12BIT,5);   //对应板子上的IN5
+   71   1      //  adc6 = adc_mean_filter(S_ADC5,ADC_12BIT,5);   //对应板子上的IN6
+   72   1      //  adc7 = adc_mean_filter(S_ADC7,ADC_12BIT,5);   //对应板子上的IN7
+   73   1      //  adc8 = adc_mean_filter(S_ADC11,ADC_12BIT,5);  //对应板子上的IN8
    74   1        
    75   1        adc1_array[0] = adc1;
    76   1        adc2_array[0] = adc2;
    77   1        adc3_array[0] = adc3;
    78   1        adc4_array[0] = adc4;
-   79   1        adc5_array[0] = adc5;
-   80   1        adc6_array[0] = adc6;
-   81   1        adc7_array[0] = adc7;
-   82   1        adc8_array[0] = adc8;
+   79   1      //  adc5_array[0] = adc5;
+   80   1      //  adc6_array[0] = adc6;
+   81   1      //  adc7_array[0] = adc7;
+   82   1      //  adc8_array[0] = adc8;
    83   1        for(adc_read_count; adc_read_count > 0; adc_read_count--)
    84   1        {
    85   2          adc1_array[adc_read_count] = adc1_array[adc_read_count-1];
    86   2          adc2_array[adc_read_count] = adc2_array[adc_read_count-1];
    87   2          adc3_array[adc_read_count] = adc3_array[adc_read_count-1];
    88   2          adc4_array[adc_read_count] = adc4_array[adc_read_count-1];
-   89   2          adc5_array[adc_read_count] = adc5_array[adc_read_count-1];
-   90   2          adc6_array[adc_read_count] = adc6_array[adc_read_count-1];
-   91   2          adc7_array[adc_read_count] = adc7_array[adc_read_count-1];
-   92   2          adc8_array[adc_read_count] = adc8_array[adc_read_count-1];
+   89   2      //    adc5_array[adc_read_count] = adc5_array[adc_read_count-1];
+   90   2      //    adc6_array[adc_read_count] = adc6_array[adc_read_count-1];
+   91   2      //    adc7_array[adc_read_count] = adc7_array[adc_read_count-1];
+   92   2      //    adc8_array[adc_read_count] = adc8_array[adc_read_count-1];
    93   2        }
-   94   1      }
-   95          
-   96          
+   94   1        
+   95   1        
+   96   1      }
+   97          
+   98          
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       412     ------
+  code size            =       288     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

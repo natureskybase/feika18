@@ -132,10 +132,7 @@ void INT4_Isr() interrupt 16
 
 void TM0_Isr() interrupt 1
 {
-	Read_Adc_Value();
-	ADC_error_processing(1, 0, 0);
-	ADC_error_window_filtering();
-	ADC_error_weight_filtering();
+	
 	
 }
 void TM1_Isr() interrupt 3
@@ -158,59 +155,66 @@ void TM4_Isr() interrupt 20    //函数
 {
 	TIM4_CLEAR_FLAG; //清除中断标志
 /*****************************************/	
-	if(adc1 <1000 && adc2 <1000 && adc3 <1000 && adc4 <1000)
-		order_speed = 0;
-
+	Read_Adc_Value();
+	ADC_error_processing(1, 0, 0);
+	ADC_error_window_filtering();
+	ADC_error_weight_filtering();
 	
-	Dir_judge_flag = Direct_judge();
-	switch (Dir_judge_flag)
+	lost_line_judge(); //丢线检测
+	if(lostline_flag == 0)//检测到不为丢线状态
 	{
-		case(0)://直道
-//			order_angle = Correct_Angle(80,10,0);
-			order_angle = Dev_Tolerant_Correc_Ang(1, 200, 0, 12, 60, 0, 5, 105, 0);
-			order_speed = 2500;
-			angle_limit = 100;
-		break;
-		
-		case(1)://左弯道
-//			order_angle = Correct_Angle(150,0,0);
-			order_angle = Dev_Tolerant_Correc_Ang(1, 110, 0, 10, 75, 0, 0, 150, 0);
-			order_speed = 2450;
-			angle_limit = 100;
-		break;
-		
-		case(2)://右弯道
-//			order_angle = Correct_Angle(150,0,0);
-			order_angle = Dev_Tolerant_Correc_Ang(1, 110, 0, 10, 75, 0, 0, 150, 0);
-			order_speed = 2450;
-			angle_limit = 100;
-		break;
-		
-		case(8)://左转弯过渡
-//			order_angle = Correct_Angle(150,0,0);
-			order_angle = Dev_Tolerant_Correc_Ang(1, 140, 0, 16, 18, 0, 2, 150, 0);
-			order_speed = 2550;
-			angle_limit = 100;
-		break;
-		
-		case(9)://右转弯过渡
-//			order_angle = Correct_Angle(150,0,0);
-			order_angle = Dev_Tolerant_Correc_Ang(1, 140, 0, 16, 18, 0, 2, 150, 0);
-			order_speed = 2550;
-			angle_limit = 100;
-		break;
-		
-		case(3)://左环岛
-			Roundabout_flag_L = 1;
-		break;
-		
-		case(4)://右环岛
-			Roundabout_flag_R = 1;
-		break;
+		Dir_judge_flag = Direct_judge();
+		switch (Dir_judge_flag)
+		{
+			case(0)://直道
+	//			order_angle = Correct_Angle(20,0,0);
+				order_angle = Dev_Tolerant_Correc_Ang(1, 200, 0, 0, 10, 0, 4, 105, 0);
+				order_speed = 2500;
+				angle_limit = 100;
+			break;
 			
+			case(1)://左弯道
+	//			order_angle = Correct_Angle(150,0,0);
+				order_angle = Dev_Tolerant_Correc_Ang(1, 500, 0, 0, 28, 0, 0, 150, 0);//order_angle = Dev_Tolerant_Correc_Ang(1, 140, 0, 0, 29, 0, 0, 150, 0);
+				order_speed = 2450;
+				angle_limit = 100;
+			break;
+			
+			case(2)://右弯道
+	//			order_angle = Correct_Angle(150,0,0);
+				order_angle = Dev_Tolerant_Correc_Ang(1, 500, 0, 0, 30, 0, 0, 150, 0);//order_angle = Dev_Tolerant_Correc_Ang(1, 130, 0, 0, 33, 0, 0, 150, 0);
+				order_speed = 2450;
+				angle_limit = 100;
+			break;
+			
+			case(8)://左转弯过渡
+	//			order_angle = Correct_Angle(150,0,0);
+				order_angle = Dev_Tolerant_Correc_Ang(1, 500, 0, 0, 35, 0, 0, 150, 0);//order_angle = Dev_Tolerant_Correc_Ang(1, 500, 0, 0, 35, 0, 0, 150, 0);
+				order_speed = 2550;
+				angle_limit = 100;
+			break;
+			
+			case(9)://右转弯过渡
+	//			order_angle = Correct_Angle(150,0,0);
+				order_angle = Dev_Tolerant_Correc_Ang(1, 500, 0, 0, 40, 0, 0, 150, 0);//order_angle = Dev_Tolerant_Correc_Ang(1, 500, 0, 0, 40, 0, 0, 150, 0);
+				order_speed = 2550;
+				angle_limit = 100;
+			break;
+			
+			case(3)://左环岛
+				Roundabout_flag_L = 1;
+			break;
+			
+			case(4)://右环岛
+				Roundabout_flag_R = 1;
+			break;
+		}
 	}
+	if(lostline_flag == 1)
+		lostline_deal(); //丢线处理
 	
-	
+	if(adc1 <500 && adc2 <500 && adc3 <500 && adc4 <500)
+		order_speed = 0;
 }
 
 //void  INT0_Isr()  interrupt 0;

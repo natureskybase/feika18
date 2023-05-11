@@ -47,20 +47,14 @@ void main()
 	
 //	Timer_Init();// 启动定时器3和定时器4,使能定时器4中断
 	pit_timer_ms(TIM_4, 5);
-	pit_timer_ms(TIM_0, 2);
 	
     while(1)
 	{
 	
 		Steer_Spin_limit(order_angle,angle_limit);
 		Motor_Control(order_speed,order_speed);
-		
-		lost_line_judge();//丢线检测
-		lostline_deal();  //丢线处理
-		
-		Roundabout_deal();//环岛处理函数
-		
 	
+		
 		//上位机数值显示//
 		adc_err_read =(int16)(adc_err * 100);
 		order_angle_read =(int16)(order_angle);

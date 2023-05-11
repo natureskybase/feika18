@@ -12,8 +12,9 @@ float order_speed=0;			// 目标速度
 float ADC_error_a=0;     // 电感误差加速度(ms)
 
 float adc_err=0;         // 电感误差
-float adc_err_array[5];  // 窗口电感误差
-int16 window_flag=1;   	 // 窗口标志位
+float adc_err_array[6]={0,0,0,0,0,0};  // 窗口电感误差
+int16 adc_err_read_count=0;    // 窗口滤波计数
+int16 window_flag=0;      //窗口滤波标志位
 
 int16 Roundabout_flag_L=0; // 左环岛检测标志位
 int16 Roundabout_flag_R=0; // 右环岛检测标志位
@@ -156,16 +157,16 @@ float ADC_error_weight_filtering(void)
 **************************************************************************/
 float ADC_error_window_filtering(void)
 {
-	adc_err_array[window_flag]=adc_err;
+	adc_err_read_count = 5;//adc_err_array[0]作为哨兵
 	
-	window_flag ++;
+	adc_err_array[0] = adc_err;
 	
-	if(window_flag==5)
-		window_flag=0;
+	for(adc_err_read_count; adc_err_read_count > 0; adc_err_read_count--)
+	{
+		adc_err_array[adc_err_read_count] = adc_err_array[adc_err_read_count-1];
+	}
 	
-	
-	if(adc_err_array[0]!=0)
-		adc_err=(adc_err_array[1]+adc_err_array[2]+adc_err_array[3]+adc_err_array[4])/4;
+	adc_err=(adc_err_array[1]+adc_err_array[2]+adc_err_array[3]+adc_err_array[4]+adc_err_array[5])/5;
 	
 	
 	return adc_err;
@@ -342,28 +343,14 @@ int16 Direct_judge(void)
 **************************************************************************/
 void Roundabout_deal(void)
 {
-	delay_ms(100);//打角延时
-	Roundabout_count = 200; //时间计算为Roundabout_count * 0.01 (s)
 	if(Roundabout_flag_L == 1)
 	{
-		while(Roundabout_count-- > 0)
-		{
-			Steer_Spin(-28);
-			Motor_Control(2550,2550);
-			delay_ms(10);
-		}
-		Roundabout_flag_L = 0;
+		
 	}
 		
 	if(Roundabout_flag_R == 1)
 	{
-		while(Roundabout_count-- > 0)
-		{
-			Steer_Spin(28);
-			Motor_Control(2550,2550);
-			delay_ms(10);
-		}
-		Roundabout_flag_R = 0;
+		
 	}
 }
 /**************************************************************************
@@ -433,29 +420,37 @@ int16 Direct_judge_Accele(void)
 
 
 /**************************************************************************
-函数功能：丢线判断
+函数功能：丢线检测
 输入参数：无
 **************************************************************************/
 void lost_line_judge(void)
 {
-	int8 i,L_count=0,R_count=0;// 左右计数
-	lostline_dir = 0; 	
+	int8 i,L_count=0,R_count=0;// 左右计数 	
 	if(lostline_flag==0)//丢线标志为0时进入
 	{
-		if(adc1 < 3000 && adc2 < 3000 && adc3 < 3000 && adc4 < 3000) //进入丢线条件
+		if(adc1 < 700 && adc2 < 700 && adc3 < 700 && adc4 < 700) //进入丢线条件
 			lostline_flag=1;//丢线标志置1
 
-		for(i=0;i<5;i++)//奇数
+//		for(i=0;i<5;i++)//奇数
+//		{
+//			if(adc_err_array[i]<0)
+//			 R_count++;
+//			if(adc_err_array[i]>0)
+//			 L_count++;
+//		}
+		for(i=0; i<3; i++)
 		{
-			if(adc_err_array[i]<0)
-			 R_count++;
-			if(adc_err_array[i]>0)
-			 L_count++;
+			if((adc1+adc2) > (adc3+adc4))
+				R_count++;
+			if((adc1+adc2) < (adc3+adc4))
+				L_count++;
 		}
 		if(L_count>R_count)
 			lostline_dir=1;//左丢线标志
 		if(L_count<R_count) 
 			lostline_dir=2;//右丢线标志
+		else
+			lostline_dir=0;//无效丢线标志
 
 	}
 }
@@ -467,27 +462,18 @@ void lost_line_judge(void)
 **************************************************************************/
 void lostline_deal(void)
 {
-	lostline_count = 200; //时间计算为Roundabout_count * 0.01 (s)
 	if(lostline_flag==1)
 		{
 			if(lostline_dir==1)//左丢线
 			{
-				while(Roundabout_count-- > 0)
-				{
-				Steer_Spin(-28);
-				Motor_Control(2550,2550);
-				delay_ms(10);
-				}
+				order_angle = -28;
+				order_speed = 2400;
 			}
 		
 			if(lostline_dir==2)//右丢线
 			{
-				while(Roundabout_count-- > 0)
-				{
-				Steer_Spin(-28);
-				Motor_Control(2550,2550);
-				delay_ms(10);
-				}
+				order_angle = 28;
+				order_speed = 2400;
 			}
 
 			if(adc1 > 1000 && adc2 > 1000 && adc3 > 1000 && adc4 > 1000)

@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  steer                                                              09/05/23  22:12:15  PAGE 1   
+C251 COMPILER V5.60.0,  steer                                                              10/05/23  23:41:55  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE steer
@@ -38,14 +38,14 @@ stmt  level    source
    27   1        {
    28   2        if(target_angle>=0)
    29   2        {
-   30   3      //    duty = MIDDLE_ANGLE +0.102*target_angle*target_angle;
-   31   3        duty = MIDDLE_ANGLE + target_angle*2;
+   30   3          duty = MIDDLE_ANGLE +0.122*target_angle*target_angle;
+   31   3      //  duty = MIDDLE_ANGLE + target_angle*2;
    32   3        }
    33   2        
    34   2        if(target_angle<0)
    35   2        {
-   36   3      //    duty = MIDDLE_ANGLE +(-0.102)*target_angle*target_angle;
-   37   3        duty = MIDDLE_ANGLE + target_angle*2.5;
+   36   3          duty = MIDDLE_ANGLE +(-0.122)*target_angle*target_angle;
+   37   3      //  duty = MIDDLE_ANGLE + target_angle*2.5;
    38   3        }
    39   2        }
    40   1        pwm_duty(STEER_PIN,duty);
@@ -66,7 +66,7 @@ stmt  level    source
    55   1        Steer_Spin(target_angle);
    56   1        
    57   1      }
-C251 COMPILER V5.60.0,  steer                                                              09/05/23  22:12:15  PAGE 2   
+C251 COMPILER V5.60.0,  steer                                                              10/05/23  23:41:55  PAGE 2   
 
    58          
    59          
@@ -75,7 +75,7 @@ stmt  level    source
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       191     ------
+  code size            =       205     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
